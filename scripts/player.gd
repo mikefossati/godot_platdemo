@@ -1,0 +1,76 @@
+extends CharacterBody3D
+
+## Player Controller - Handles player movement, jumping, and physics
+## CharacterBody3D provides built-in physics and collision detection for character movement
+
+# Movement parameters - these can be tweaked to adjust game feel
+@export var speed: float = 5.0  ## How fast the player moves (units per second)
+@export var jump_velocity: float = 10.0  ## Initial upward velocity when jumping
+@export var rotation_speed: float = 10.0  ## How quickly the player rotates to face movement direction
+
+# Gravity is pulled from project settings (configured in project.godot)
+var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+
+# Death boundary - if player falls below this Y position, trigger game over
+const DEATH_Y: float = -10.0
+
+
+func _ready() -> void:
+	# Set up the player when it enters the scene
+	pass
+
+
+func _physics_process(delta: float) -> void:
+	## Called every physics frame (typically 60 times per second)
+	## delta is the time since the last frame, used for frame-rate independent movement
+
+	# Apply gravity when not on the floor
+	# is_on_floor() is a built-in function that checks if the CharacterBody3D is touching ground
+	if not is_on_floor():
+		velocity.y -= gravity * delta
+
+	# Handle jump input
+	# Only allow jumping when on the floor to prevent double-jumps
+	if Input.is_action_just_pressed("jump") and is_on_floor():
+		velocity.y = jump_velocity
+
+	# Get input direction from action mappings (WASD keys)
+	# Input.get_axis returns -1, 0, or 1 based on which keys are pressed
+	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+
+	# Convert 2D input to 3D direction vector
+	# We use the global transform basis to ensure movement is relative to world space
+	# This creates movement on the X and Z axes (horizontal plane)
+	var direction := Vector3(input_dir.x, 0, input_dir.y).normalized()
+
+	if direction != Vector3.ZERO:
+		# Apply movement speed to horizontal velocity
+		velocity.x = direction.x * speed
+		velocity.z = direction.z * speed
+
+		# Rotate player to face movement direction
+		# lerp_angle provides smooth rotation interpolation
+		var target_rotation := atan2(direction.x, direction.z)
+		rotation.y = lerp_angle(rotation.y, target_rotation, rotation_speed * delta)
+	else:
+		# Apply friction when no input - gradually slow down horizontal movement
+		velocity.x = move_toward(velocity.x, 0, speed)
+		velocity.z = move_toward(velocity.z, 0, speed)
+
+	# move_and_slide() is a built-in function that moves the character and handles collisions
+	# It uses the velocity vector and automatically handles sliding along surfaces
+	move_and_slide()
+
+	# Check if player has fallen off the level
+	if global_position.y < DEATH_Y:
+		die()
+
+
+## Called when the player dies (falls off the level)
+func die() -> void:
+	GameManager.trigger_game_over()
+
+
+## Called when player collides with a collectible
+func collect_item() -> void:
+	GameManager.collect_item()
