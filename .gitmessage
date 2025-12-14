@@ -1,0 +1,43 @@
+# <type>: <short summary (50 chars max)>
+#
+# <body - explain what and why, not how (wrap at 72 chars)>
+#
+# <footer - reference issues, breaking changes, etc.>
+
+# --- COMMIT MESSAGE GUIDELINES ---
+#
+# Type (required):
+#   feat:     New feature
+#   fix:      Bug fix
+#   docs:     Documentation only changes
+#   style:    Code formatting (not visual style)
+#   refactor: Code change that neither fixes a bug nor adds a feature
+#   perf:     Performance improvement
+#   test:     Adding missing tests
+#   chore:    Build process, dependencies, tooling
+#
+# Subject line (required):
+#   - Use imperative mood ("add" not "added" or "adds")
+#   - Don't capitalize first letter
+#   - No period at the end
+#   - Max 50 characters
+#
+# Body (optional):
+#   - Explain WHAT and WHY, not HOW
+#   - Wrap at 72 characters
+#   - Separate from subject with blank line
+#
+# Footer (optional):
+#   - Reference issues: "Fixes #123" or "Closes #456"
+#   - Breaking changes: "BREAKING CHANGE: description"
+#
+# Examples:
+#   feat: add double jump mechanic
+#
+#   fix: prevent player from falling through platforms
+#
+#   docs: update README with new controls
+#
+#   refactor: extract camera logic into separate method
+#
+# Remove all comment lines before committing
