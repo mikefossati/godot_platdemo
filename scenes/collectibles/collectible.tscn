@@ -12,7 +12,7 @@ collision_mask = 2
 script = ExtResource("1_uf7kg")
 
 [node name="StarModel" parent="." instance=ExtResource("2_star")]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.3, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_7jb6s")
