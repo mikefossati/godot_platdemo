@@ -166,6 +166,23 @@ This prototype demonstrates fundamental 3D game development concepts:
 
 Each script is heavily commented to explain the "why" behind the code, not just the "what".
 
+## Asset Credits
+
+### 3D Models
+All 3D models are from the **Ultimate Platformer Pack** by Quaternius:
+- **Character Model**: Animated platformer character
+- **Star Collectibles**: Star pickup model
+- **Platform Models**: Grass-themed modular platforms
+
+**Source**: https://quaternius.com/packs/ultimateplatformer.html
+**License**: CC0 (Public Domain) - Free for personal and commercial use
+**Attribution**: Not required but appreciated
+
+Thank you to Quaternius for providing high-quality, free 3D assets to the game development community!
+
 ## License
 
 This is a learning prototype - feel free to use and modify for educational purposes.
+
+Game code and scripts: Created for educational purposes
+3D Assets: CC0 by Quaternius (see Asset Credits above)
