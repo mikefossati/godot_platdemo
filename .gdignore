@@ -1,0 +1,2 @@
+# This file tells Godot to ignore certain asset directories during import
+# Useful for keeping source files that don't need to be imported
