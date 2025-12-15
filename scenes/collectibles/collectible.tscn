@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://btkb8m3w0lnor"]
 
 [ext_resource type="Script" path="res://scripts/collectible.gd" id="1_uf7kg"]
-[ext_resource type="PackedScene" uid="uid://star_model" path="res://assets/models/quaternius_platformer/collectibles/Star.gltf" id="2_star"]
+[ext_resource type="PackedScene" uid="uid://carinwnvubrmy" path="res://assets/models/quaternius_platformer/collectibles/Star.gltf" id="2_star"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_7jb6s"]
 radius = 0.6
