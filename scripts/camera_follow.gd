@@ -35,14 +35,9 @@ func _ready() -> void:
 		# Set collision mask to only collide with World layer (layer 1)
 		spring_arm.collision_mask = 1
 
-		# Position and rotate the spring arm to match the offset direction
-		# The spring arm extends along its local -Z axis
-		# We need to rotate it to point in the offset direction
-		var offset_direction = offset.normalized()
-		# Calculate rotation to align -Z with offset direction
-		if offset_direction.length() > 0:
-			# Look in the opposite direction of offset (since spring extends backward)
-			spring_arm.look_at(global_position - offset_direction, Vector3.UP)
+		# SpringArm extends along local -Z axis by default
+		# No need to rotate it - the parent CameraController handles rotation
+		# The spring arm will automatically extend backward from the controller
 
 
 func _process(delta: float) -> void:

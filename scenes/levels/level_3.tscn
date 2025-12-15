@@ -197,7 +197,6 @@ offset = Vector3(0, 8, 12)
 spring_length = 14.422
 collision_mask = 1
 margin = 0.3
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
 
 [node name="Camera3D" type="Camera3D" parent="CameraController/SpringArm3D"]
 
