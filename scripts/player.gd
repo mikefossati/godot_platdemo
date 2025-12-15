@@ -17,6 +17,7 @@ const DEATH_Y: float = -10.0
 # Animation
 @onready var animation_tree: AnimationTree = $CharacterModel/AnimationTree
 var was_on_floor: bool = true  # Track previous frame's ground state for landing detection
+var landing_frames: int = 0  # Count frames since landing to persist the landing signal
 
 
 func _ready() -> void:
@@ -90,13 +91,25 @@ func update_animation() -> void:
 	var is_moving := horizontal_velocity.length() > 0.1
 	var is_grounded := is_on_floor()
 	var is_jumping := not is_grounded and velocity.y > 0
+
+	# Detect landing (just touched ground)
 	var just_landed := is_grounded and not was_on_floor
+
+	# Persist landing signal for a few frames to ensure state machine processes it
+	if just_landed:
+		landing_frames = 5  # Signal landing for 5 frames (~83ms at 60fps)
+
+	var has_landed := landing_frames > 0
 
 	# Update animation tree conditions
 	animation_tree.set("parameters/conditions/is_moving", is_moving)
 	animation_tree.set("parameters/conditions/is_idle", not is_moving)
 	animation_tree.set("parameters/conditions/is_jumping", is_jumping)
-	animation_tree.set("parameters/conditions/has_landed", just_landed)
+	animation_tree.set("parameters/conditions/has_landed", has_landed)
+
+	# Countdown landing frames
+	if landing_frames > 0:
+		landing_frames -= 1
 
 	# Store current ground state for next frame
 	was_on_floor = is_grounded
