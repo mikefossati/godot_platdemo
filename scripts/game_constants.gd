@@ -106,19 +106,19 @@ const SIZE_TOLERANCE := 0.2
 # ==============================================================================
 
 ## Calculate collision size for a scaled platform model
-static func calculate_platform_collision_size(model_scale: Vector3) -> Vector3:
+func calculate_platform_collision_size(model_scale: Vector3) -> Vector3:
 	return PLATFORM_CUBE_MESH_AABB_SIZE * model_scale
 
 
 ## Calculate collision position for a scaled platform model
-static func calculate_platform_collision_position(_model_scale: Vector3) -> Vector3:
+func calculate_platform_collision_position(_model_scale: Vector3) -> Vector3:
 	# Model is offset by 0.25, collision should match
 	# Note: Position is constant regardless of scale (always centered at Y=0.25)
 	return Vector3(0, PLATFORM_MODEL_Y_OFFSET, 0)
 
 
 ## Get expected camera offset for a level difficulty
-static func get_camera_offset_for_difficulty(difficulty: int) -> Vector3:
+func get_camera_offset_for_difficulty(difficulty: int) -> Vector3:
 	match difficulty:
 		1: return CAMERA_OFFSET_EASY
 		2: return CAMERA_OFFSET_MEDIUM
@@ -127,12 +127,12 @@ static func get_camera_offset_for_difficulty(difficulty: int) -> Vector3:
 
 
 ## Validate if two positions are within tolerance
-static func positions_match(pos1: Vector3, pos2: Vector3, tolerance: float = POSITION_TOLERANCE) -> bool:
+func positions_match(pos1: Vector3, pos2: Vector3, tolerance: float = POSITION_TOLERANCE) -> bool:
 	return pos1.distance_to(pos2) < tolerance
 
 
 ## Validate if two sizes are within tolerance
-static func sizes_match(size1: Vector3, size2: Vector3, tolerance: float = SIZE_TOLERANCE) -> bool:
+func sizes_match(size1: Vector3, size2: Vector3, tolerance: float = SIZE_TOLERANCE) -> bool:
 	return (abs(size1.x - size2.x) < tolerance and
 			abs(size1.y - size2.y) < tolerance and
 			abs(size1.z - size2.z) < tolerance)
