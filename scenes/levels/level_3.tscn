@@ -189,10 +189,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2, 6)
 [node name="Player" parent="." groups=["player"] instance=ExtResource("1_f4xol")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 12)
+[node name="CameraController" type="Node3D" parent="."]
 script = ExtResource("2_db8qg")
 offset = Vector3(0, 8, 12)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraController"]
+spring_length = 14.422
+collision_mask = 1
+margin = 0.3
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
+
+[node name="Camera3D" type="Camera3D" parent="CameraController/SpringArm3D"]
 
 [node name="GameUI" parent="." instance=ExtResource("4_t5xbp")]
 
