@@ -18,6 +18,8 @@ const DEATH_Y: float = -10.0
 @onready var animation_tree: AnimationTree = $CharacterModel/AnimationTree
 var was_on_floor: bool = true  # Track previous frame's ground state for landing detection
 var landing_frames: int = 0  # Count frames since landing to persist the landing signal
+var punch_frames: int = 0  # Count frames since punch triggered to persist the punch signal
+var wave_frames: int = 0  # Count frames since wave triggered to persist the wave signal
 
 
 func _ready() -> void:
@@ -100,16 +102,44 @@ func update_animation() -> void:
 		landing_frames = 5  # Signal landing for 5 frames (~83ms at 60fps)
 
 	var has_landed := landing_frames > 0
+	var is_punching := punch_frames > 0
+	var is_waving := wave_frames > 0
 
 	# Update animation tree conditions
 	animation_tree.set("parameters/conditions/is_moving", is_moving)
 	animation_tree.set("parameters/conditions/is_idle", not is_moving)
 	animation_tree.set("parameters/conditions/is_jumping", is_jumping)
 	animation_tree.set("parameters/conditions/has_landed", has_landed)
+	animation_tree.set("parameters/conditions/is_punching", is_punching)
+	animation_tree.set("parameters/conditions/is_waving", is_waving)
 
 	# Countdown landing frames
 	if landing_frames > 0:
 		landing_frames -= 1
 
+	# Countdown punch frames
+	if punch_frames > 0:
+		punch_frames -= 1
+
+	# Countdown wave frames
+	if wave_frames > 0:
+		wave_frames -= 1
+
 	# Store current ground state for next frame
 	was_on_floor = is_grounded
+
+
+## Play the collectible pickup animation (Punch)
+## Triggers the Punch state in the animation state machine
+func play_collect_animation() -> void:
+	# Persist punch signal long enough for the full animation to play
+	# Punch animation is ~0.5 seconds, so we need at least 30 frames at 60fps
+	punch_frames = 30
+
+
+## Play the victory animation (Wave)
+## Triggers the Wave state in the animation state machine
+func play_victory_animation() -> void:
+	# Persist wave signal long enough for the full animation to play
+	# Wave animation is ~2 seconds, so we need at least 120 frames at 60fps
+	wave_frames = 120

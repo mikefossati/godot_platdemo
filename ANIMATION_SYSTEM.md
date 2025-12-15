@@ -126,21 +126,21 @@ var was_on_floor: bool = true  # Track landing
 **Animation Update:**
 ```gdscript
 func update_animation() -> void:
-    # Determine state
-    var horizontal_velocity := Vector2(velocity.x, velocity.z)
-    var is_moving := horizontal_velocity.length() > 0.1
-    var is_grounded := is_on_floor()
-    var is_jumping := not is_grounded and velocity.y > 0
-    var just_landed := is_grounded and not was_on_floor
+	# Determine state
+	var horizontal_velocity := Vector2(velocity.x, velocity.z)
+	var is_moving := horizontal_velocity.length() > 0.1
+	var is_grounded := is_on_floor()
+	var is_jumping := not is_grounded and velocity.y > 0
+	var just_landed := is_grounded and not was_on_floor
 
-    # Set conditions
-    animation_tree.set("parameters/conditions/is_moving", is_moving)
-    animation_tree.set("parameters/conditions/is_idle", not is_moving)
-    animation_tree.set("parameters/conditions/is_jumping", is_jumping)
-    animation_tree.set("parameters/conditions/has_landed", just_landed)
+	# Set conditions
+	animation_tree.set("parameters/conditions/is_moving", is_moving)
+	animation_tree.set("parameters/conditions/is_idle", not is_moving)
+	animation_tree.set("parameters/conditions/is_jumping", is_jumping)
+	animation_tree.set("parameters/conditions/has_landed", just_landed)
 
-    # Update tracking
-    was_on_floor = is_grounded
+	# Update tracking
+	was_on_floor = is_grounded
 ```
 
 Called every frame in `_physics_process()` after `move_and_slide()`.
@@ -196,12 +196,12 @@ To test other animations (e.g., Run instead of Walk):
 **When player dies:**
 ```gdscript
 func die() -> void:
-    # Play death animation
-    animation_tree.set("parameters/conditions/is_dead", true)
-    # Wait for animation
-    await get_tree().create_timer(1.0).timeout
-    # Then game over
-    GameManager.trigger_game_over()
+	# Play death animation
+	animation_tree.set("parameters/conditions/is_dead", true)
+	# Wait for animation
+	await get_tree().create_timer(1.0).timeout
+	# Then game over
+	GameManager.trigger_game_over()
 ```
 
 **State machine:**
@@ -213,7 +213,7 @@ func die() -> void:
 
 ```gdscript
 func celebrate() -> void:
-    animation_tree.set("parameters/conditions/is_celebrating", true)
+	animation_tree.set("parameters/conditions/is_celebrating", true)
 ```
 
 Add state for "Wave" or "Yes" animation.

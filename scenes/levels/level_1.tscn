@@ -1,21 +1,12 @@
-[gd_scene load_steps=10 format=3 uid="uid://dpy6omsabqkk4"]
+[gd_scene load_steps=11 format=3 uid="uid://dpy6omsabqkk4"]
 
 [ext_resource type="PackedScene" uid="uid://dtqr7qwcbhqn4" path="res://scenes/player/player.tscn" id="1_f4xol"]
-[ext_resource type="Script" path="res://scripts/camera_follow.gd" id="2_db8qg"]
+[ext_resource type="Script" uid="uid://c6kv2jcr3yytn" path="res://scripts/camera_follow.gd" id="2_db8qg"]
 [ext_resource type="PackedScene" uid="uid://btkb8m3w0lnor" path="res://scenes/collectibles/collectible.tscn" id="3_6e0wl"]
 [ext_resource type="PackedScene" uid="uid://c3eiqffjxu6qw" path="res://scenes/ui/game_ui.tscn" id="4_t5xbp"]
 [ext_resource type="PackedScene" uid="uid://58dujpts7581" path="res://assets/models/quaternius_platformer/platforms/Cube_Grass_Single.gltf" id="5_platform_grass"]
 [ext_resource type="PackedScene" uid="uid://rvt20iwpxutm" path="res://assets/models/quaternius_platformer/platforms/Cube_Dirt_Single.gltf" id="6_platform_dirt"]
-[ext_resource type="Script" path="res://scripts/collision_debugger.gd" id="7_debugger"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_y4hqf"]
-size = Vector3(30, 1, 30)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_platform"]
-size = Vector3(4.5, 1, 4.5)
-
-[sub_resource type="Sky" id="Sky_default"]
-sky_material = null
+[ext_resource type="Script" uid="uid://dcepoi8kb2k3r" path="res://scripts/collision_debugger.gd" id="7_debugger"]
 
 [sub_resource type="Environment" id="Environment_default"]
 background_mode = 1
@@ -28,6 +19,12 @@ glow_enabled = true
 glow_intensity = 0.3
 glow_strength = 0.8
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_y4hqf"]
+size = Vector3(30, 1, 30)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_platform"]
+size = Vector3(4.5, 1, 4.5)
+
 [node name="MainLevel" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -35,11 +32,11 @@ environment = SubResource("Environment_default")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 10, 0)
-light_energy = 1.2
 light_color = Color(1, 0.98, 0.9, 1)
+light_energy = 1.2
 shadow_enabled = true
-shadow_opacity = 0.7
 shadow_bias = 0.05
+shadow_opacity = 0.7
 
 [node name="Ground" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
@@ -139,12 +136,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
 [node name="CameraController" type="Node3D" parent="."]
 script = ExtResource("2_db8qg")
-offset = Vector3(0, 5, 8)
-enable_debug = true
+enable_debug = false
+debug_console_output = false
 
 [node name="SpringArm3D" type="SpringArm3D" parent="CameraController"]
 spring_length = 9.434
-collision_mask = 1
 margin = 0.3
 
 [node name="Camera3D" type="Camera3D" parent="CameraController/SpringArm3D"]

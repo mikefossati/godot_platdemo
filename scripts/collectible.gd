@@ -43,8 +43,19 @@ func _on_body_entered(body: Node3D) -> void:
 	# Check if the body that entered is the player
 	# We check if it has the "collect_item" method to ensure it's the player
 	if body.has_method("collect_item"):
+		# Disable collision detection to prevent collecting the same item multiple times
+		set_deferred("monitoring", false)
+
+		# Play the pickup animation (Punch) on the player character
+		if body.has_method("play_collect_animation"):
+			body.play_collect_animation()
+
 		# Call the player's collect_item method
 		body.collect_item()
+
+		# Wait for the punch animation to complete before removing the star
+		# Punch animation is 30 frames at 60fps = 0.5 seconds
+		await get_tree().create_timer(0.5).timeout
 
 		# Remove this collectible from the scene
 		# queue_free() safely deletes the node at the end of the current frame

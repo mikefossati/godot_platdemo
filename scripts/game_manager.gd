@@ -97,6 +97,13 @@ func collect_item(points: int = 10) -> void:
 
 	# Check if all collectibles have been gathered
 	if collectibles_gathered >= total_collectibles and total_collectibles > 0:
+		# Find the player in the current scene and trigger victory animation
+		var player = _find_player()
+		if player and player.has_method("play_victory_animation"):
+			player.play_victory_animation()
+			# Wait for wave animation to complete before showing level complete screen
+			await get_tree().create_timer(5.0).timeout
+
 		trigger_level_complete()
 
 
@@ -250,3 +257,12 @@ func load_game() -> void:
 
 	# Load level stats
 	level_stats = save_file.get_value("stats", "level_stats", {})
+
+
+## Find the player node in the current scene
+func _find_player() -> Node:
+	# Look for a node in the "player" group
+	var players = get_tree().get_nodes_in_group("player")
+	if players.size() > 0:
+		return players[0]
+	return null
