@@ -22,6 +22,9 @@ animation = &"Jump_Idle"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_land"]
 animation = &"Jump_Land"
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_start_to_idle"]
+advance_mode = 0
+
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_idle_to_walk"]
 xfade_time = 0.2
 advance_mode = 2
@@ -64,7 +67,7 @@ states/Airborne/node = SubResource("AnimationNodeAnimation_airborne")
 states/Airborne/position = Vector2(500, 200)
 states/Land/node = SubResource("AnimationNodeAnimation_land")
 states/Land/position = Vector2(350, 300)
-transitions = ["Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_idle_to_walk"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_walk_to_idle"), "Idle", "Jump", SubResource("AnimationNodeStateMachineTransition_any_to_jump"), "Walk", "Jump", SubResource("AnimationNodeStateMachineTransition_any_to_jump"), "Jump", "Airborne", SubResource("AnimationNodeStateMachineTransition_jump_to_airborne"), "Airborne", "Land", SubResource("AnimationNodeStateMachineTransition_airborne_to_land"), "Land", "Idle", SubResource("AnimationNodeStateMachineTransition_land_to_idle")]
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_start_to_idle"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_idle_to_walk"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_walk_to_idle"), "Idle", "Jump", SubResource("AnimationNodeStateMachineTransition_any_to_jump"), "Walk", "Jump", SubResource("AnimationNodeStateMachineTransition_any_to_jump"), "Jump", "Airborne", SubResource("AnimationNodeStateMachineTransition_jump_to_airborne"), "Airborne", "Land", SubResource("AnimationNodeStateMachineTransition_airborne_to_land"), "Land", "Idle", SubResource("AnimationNodeStateMachineTransition_land_to_idle")]
 graph_offset = Vector2(-50, 0)
 
 [node name="Player" type="CharacterBody3D"]
