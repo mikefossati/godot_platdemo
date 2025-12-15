@@ -4,9 +4,9 @@ extends Area3D
 ## Uses Area3D for overlap detection (doesn't block movement, just detects collision)
 
 # Visual feedback parameters
-@export var rotation_speed: float = 2.0  ## Speed of the spinning animation
-@export var bob_height: float = 0.3  ## How high the item bobs up and down
-@export var bob_speed: float = 2.0  ## Speed of the bobbing animation
+@export var rotation_speed: float = GameConstants.COLLECTIBLE_ROTATION_SPEED  ## Speed of the spinning animation
+@export var bob_height: float = GameConstants.COLLECTIBLE_BOB_HEIGHT  ## How high the item bobs up and down
+@export var bob_speed: float = GameConstants.COLLECTIBLE_BOB_SPEED  ## Speed of the bobbing animation
 
 # Starting position for bobbing animation
 var start_y: float = 0.0
@@ -54,9 +54,26 @@ func _on_body_entered(body: Node3D) -> void:
 		body.collect_item()
 
 		# Wait for the punch animation to complete before removing the star
-		# Punch animation is 30 frames at 60fps = 0.5 seconds
-		await get_tree().create_timer(0.5).timeout
+		await get_tree().create_timer(GameConstants.COLLECTIBLE_PICKUP_DELAY).timeout
 
-		# Remove this collectible from the scene
-		# queue_free() safely deletes the node at the end of the current frame
-		queue_free()
+		# Check if this collectible is managed by a pool
+		var pool_manager = get_tree().get_first_node_in_group("collectible_pool")
+		if pool_manager and pool_manager.has_method("release_collectible"):
+			# Return to pool instead of destroying
+			pool_manager.release_collectible(self)
+		else:
+			# No pool manager, use traditional destruction
+			queue_free()
+
+
+## Reset this collectible for reuse from object pool
+func reset_pooled_object() -> void:
+	# Reset animation state
+	time_passed = 0.0
+
+	# Re-enable collision detection
+	monitoring = true
+	monitorable = true
+
+	# Reset visual state (will be set by bobbing animation)
+	# Position will be set by the spawner

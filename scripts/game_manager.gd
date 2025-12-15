@@ -13,6 +13,9 @@ var current_level_index: int = 0
 var current_level_data: LevelData = null
 var unlocked_levels: Array[String] = ["level_1"]  # Array of unlocked level IDs
 
+# Cached player reference (reset on each level load)
+var cached_player: Node = null
+
 # Level registry - all available levels
 var level_registry: Array[LevelData] = []
 
@@ -20,7 +23,7 @@ var level_registry: Array[LevelData] = []
 var level_stats: Dictionary = {}
 
 # Save file path
-const SAVE_PATH: String = "user://game_save.cfg"
+const SAVE_PATH: String = GameConstants.SAVE_PATH
 
 # Signals to notify other nodes of state changes
 signal score_changed(new_score: int)
@@ -85,6 +88,7 @@ func reset_game() -> void:
 	score = 0
 	collectibles_gathered = 0
 	total_collectibles = 0
+	cached_player = null  # Invalidate player cache when resetting game
 
 
 ## Called when a collectible is picked up
@@ -102,7 +106,7 @@ func collect_item(points: int = 10) -> void:
 		if player and player.has_method("play_victory_animation"):
 			player.play_victory_animation()
 			# Wait for wave animation to complete before showing level complete screen
-			await get_tree().create_timer(5.0).timeout
+			await get_tree().create_timer(GameConstants.VICTORY_WAIT_DURATION).timeout
 
 		trigger_level_complete()
 
@@ -233,12 +237,14 @@ func save_game() -> void:
 	save_file.set_value("stats", "level_stats", level_stats)
 
 	# Save metadata
-	save_file.set_value("meta", "version", "1.0")
+	save_file.set_value("meta", "version", GameConstants.SAVE_VERSION)
 	save_file.set_value("meta", "last_played", Time.get_datetime_string_from_system())
 
 	var err = save_file.save(SAVE_PATH)
 	if err != OK:
 		push_error("Failed to save game: %d" % err)
+	else:
+		print("Game saved successfully to: %s" % SAVE_PATH)
 
 
 ## Load game progress
@@ -248,21 +254,156 @@ func load_game() -> void:
 
 	if err != OK:
 		# No save file exists, use defaults
-		unlocked_levels = ["level_1"]
-		level_stats = {}
+		print("No save file found, using defaults")
+		_use_default_save_data()
 		return
 
-	# Load unlocked levels
-	unlocked_levels = save_file.get_value("progression", "unlocked_levels", ["level_1"])
+	# Validate save file
+	if not _validate_save_file(save_file):
+		push_warning("Save file validation failed, using defaults")
+		_use_default_save_data()
+		return
 
-	# Load level stats
-	level_stats = save_file.get_value("stats", "level_stats", {})
+	# Load and validate version
+	var save_version = save_file.get_value("meta", "version", "0.0")
+	if not _is_save_version_compatible(save_version):
+		push_warning("Save file version %s incompatible with current version %s" % [save_version, GameConstants.SAVE_VERSION])
+		# Attempt migration
+		if not _migrate_save_file(save_file, save_version):
+			push_error("Save file migration failed, using defaults")
+			_use_default_save_data()
+			return
+
+	# Load unlocked levels with validation
+	var loaded_levels = save_file.get_value("progression", "unlocked_levels", ["level_1"])
+	if _validate_unlocked_levels(loaded_levels):
+		unlocked_levels = loaded_levels
+	else:
+		push_warning("Invalid unlocked_levels data, using defaults")
+		unlocked_levels = ["level_1"]
+
+	# Load level stats with validation
+	var loaded_stats = save_file.get_value("stats", "level_stats", {})
+	if _validate_level_stats(loaded_stats):
+		level_stats = loaded_stats
+	else:
+		push_warning("Invalid level_stats data, using defaults")
+		level_stats = {}
+
+	print("Game loaded successfully from: %s" % SAVE_PATH)
 
 
-## Find the player node in the current scene
+## Use default save data
+func _use_default_save_data() -> void:
+	unlocked_levels = ["level_1"]
+	level_stats = {}
+
+
+## Validate save file structure
+func _validate_save_file(save_file: ConfigFile) -> bool:
+	# Check required sections exist
+	if not save_file.has_section("meta"):
+		push_error("Save file missing 'meta' section")
+		return false
+
+	if not save_file.has_section("progression"):
+		push_error("Save file missing 'progression' section")
+		return false
+
+	if not save_file.has_section("stats"):
+		push_error("Save file missing 'stats' section")
+		return false
+
+	# Check required keys exist
+	if not save_file.has_section_key("meta", "version"):
+		push_error("Save file missing version info")
+		return false
+
+	return true
+
+
+## Check if save version is compatible
+func _is_save_version_compatible(save_version: String) -> bool:
+	# For now, only version 1.0 is supported
+	# Future versions should implement migration logic
+	return save_version == GameConstants.SAVE_VERSION
+
+
+## Migrate save file from old version to current version
+func _migrate_save_file(_save_file: ConfigFile, _from_version: String) -> bool:
+	# No migrations needed yet (only version 1.0 exists)
+	# Future versions should implement migration logic here
+	push_warning("Save file migration not yet implemented")
+	return false
+
+
+## Validate unlocked_levels data
+func _validate_unlocked_levels(data: Variant) -> bool:
+	# Must be an Array
+	if not data is Array:
+		push_error("unlocked_levels is not an Array")
+		return false
+
+	# Must contain at least level_1
+	if not "level_1" in data:
+		push_error("unlocked_levels doesn't contain level_1")
+		return false
+
+	# All entries should be strings
+	for level_id in data:
+		if not level_id is String:
+			push_error("unlocked_levels contains non-String entry: %s" % level_id)
+			return false
+
+	return true
+
+
+## Validate level_stats data
+func _validate_level_stats(data: Variant) -> bool:
+	# Must be a Dictionary
+	if not data is Dictionary:
+		push_error("level_stats is not a Dictionary")
+		return false
+
+	# Validate each level's stats
+	for level_id in data.keys():
+		if not level_id is String:
+			push_error("level_stats contains non-String key")
+			return false
+
+		var stats = data[level_id]
+		if not stats is Dictionary:
+			push_error("level_stats[%s] is not a Dictionary" % level_id)
+			return false
+
+		# Validate required fields
+		if not stats.has("completed") or not stats["completed"] is bool:
+			push_error("level_stats[%s] missing or invalid 'completed'" % level_id)
+			return false
+
+		if not stats.has("best_score") or not stats["best_score"] is int:
+			push_error("level_stats[%s] missing or invalid 'best_score'" % level_id)
+			return false
+
+		if not stats.has("times_played") or not stats["times_played"] is int:
+			push_error("level_stats[%s] missing or invalid 'times_played'" % level_id)
+			return false
+
+	return true
+
+
+## Find the player node in the current scene (with caching for performance)
 func _find_player() -> Node:
-	# Look for a node in the "player" group
+	# Return cached player if still valid
+	if cached_player != null and is_instance_valid(cached_player):
+		return cached_player
+
+	# Cache miss - search for player in scene tree
 	var players = get_tree().get_nodes_in_group("player")
 	if players.size() > 0:
-		return players[0]
+		cached_player = players[0]
+		return cached_player
+
+	# No player found
+	cached_player = null
 	return null

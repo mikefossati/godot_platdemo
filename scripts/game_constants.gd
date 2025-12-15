@@ -136,3 +136,99 @@ func sizes_match(size1: Vector3, size2: Vector3, tolerance: float = SIZE_TOLERAN
 	return (abs(size1.x - size2.x) < tolerance and
 			abs(size1.y - size2.y) < tolerance and
 			abs(size1.z - size2.z) < tolerance)
+
+
+# ==============================================================================
+# ANIMATION DURATIONS
+# ==============================================================================
+# Animation timing constants to prevent magic numbers in code
+
+## How long to persist landing signal (in seconds)
+## Ensures state machine has time to process the landing transition
+const LANDING_SIGNAL_DURATION: float = 0.083  # 5 frames at 60fps
+
+## Punch animation duration for collectible pickup (in seconds)
+const PUNCH_ANIMATION_DURATION: float = 0.5
+
+## Wave animation duration for level completion celebration (in seconds)
+const WAVE_ANIMATION_DURATION: float = 2.0
+
+## How long to wait after victory animation before showing level complete screen (in seconds)
+const VICTORY_WAIT_DURATION: float = 5.0
+
+## How long collectible remains visible during pickup animation (in seconds)
+const COLLECTIBLE_PICKUP_DELAY: float = 0.5
+
+
+# ==============================================================================
+# PHYSICS & GAMEPLAY
+# ==============================================================================
+
+## Default Y position below which the player dies (falls off level)
+## Can be overridden per-level if needed
+const DEFAULT_DEATH_Y: float = -10.0
+
+
+# ==============================================================================
+# SCORING
+# ==============================================================================
+
+## Points awarded for collecting a single collectible
+const COLLECTIBLE_POINTS: int = 10
+
+
+# ==============================================================================
+# CAMERA SETTINGS
+# ==============================================================================
+
+## How quickly camera follows player (lerp speed)
+const DEFAULT_CAMERA_FOLLOW_SPEED: float = 5.0
+
+## Safety margin for SpringArm collision detection
+const DEFAULT_CAMERA_COLLISION_MARGIN: float = 0.3
+
+
+# ==============================================================================
+# COLLECTIBLES
+# ==============================================================================
+
+## Default rotation speed for collectible spinning animation (radians per second)
+const COLLECTIBLE_ROTATION_SPEED: float = 2.0
+
+## Height of bobbing animation for collectibles
+const COLLECTIBLE_BOB_HEIGHT: float = 0.3
+
+## Speed of bobbing animation for collectibles
+const COLLECTIBLE_BOB_SPEED: float = 2.0
+
+
+# ==============================================================================
+# SAVE SYSTEM
+# ==============================================================================
+
+## Path to save file
+const SAVE_PATH: String = "user://game_save.cfg"
+
+## Save file version for migration purposes
+const SAVE_VERSION: String = "1.0"
+
+
+# ==============================================================================
+# ANIMATION HELPER FUNCTIONS
+# ==============================================================================
+
+## Convert seconds to frames at 60fps
+static func seconds_to_frames(seconds: float) -> int:
+	return int(seconds * 60.0)
+
+## Get landing signal duration in frames
+static func get_landing_frames() -> int:
+	return seconds_to_frames(LANDING_SIGNAL_DURATION)
+
+## Get punch animation duration in frames
+static func get_punch_frames() -> int:
+	return seconds_to_frames(PUNCH_ANIMATION_DURATION)
+
+## Get wave animation duration in frames
+static func get_wave_frames() -> int:
+	return seconds_to_frames(WAVE_ANIMATION_DURATION)

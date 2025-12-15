@@ -25,6 +25,12 @@ func _ready() -> void:
 	# Find player
 	player = get_tree().get_first_node_in_group("player")
 
+	# Validate player exists if debugging is enabled
+	if debug_player and player == null:
+		push_error("CollisionDebugger: CRITICAL - No player found in 'player' group")
+		push_error("  Solution: Add player node to 'player' group in scene")
+		assert(false, "CollisionDebugger: Cannot debug player - no player node found")
+
 	# Find all platforms
 	for child in get_parent().get_children():
 		if child is StaticBody3D and child.name.begins_with("Platform"):

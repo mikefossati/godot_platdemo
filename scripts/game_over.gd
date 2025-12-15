@@ -28,8 +28,8 @@ func _ready() -> void:
 
 ## Called when the Retry button is pressed
 func _on_retry_button_pressed() -> void:
-	# Restart the game - this will reset the score and reload the level
-	GameManager.start_game()
+	# Restart the current level from the beginning
+	GameManager.load_level(GameManager.current_level_index)
 
 
 ## Called when the Menu button is pressed

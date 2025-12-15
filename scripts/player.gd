@@ -12,7 +12,7 @@ extends CharacterBody3D
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 # Death boundary - if player falls below this Y position, trigger game over
-const DEATH_Y: float = -10.0
+const DEATH_Y: float = GameConstants.DEFAULT_DEATH_Y
 
 # Animation
 @onready var animation_tree: AnimationTree = $CharacterModel/AnimationTree
@@ -99,7 +99,7 @@ func update_animation() -> void:
 
 	# Persist landing signal for a few frames to ensure state machine processes it
 	if just_landed:
-		landing_frames = 5  # Signal landing for 5 frames (~83ms at 60fps)
+		landing_frames = GameConstants.get_landing_frames()
 
 	var has_landed := landing_frames > 0
 	var is_punching := punch_frames > 0
@@ -133,13 +133,11 @@ func update_animation() -> void:
 ## Triggers the Punch state in the animation state machine
 func play_collect_animation() -> void:
 	# Persist punch signal long enough for the full animation to play
-	# Punch animation is ~0.5 seconds, so we need at least 30 frames at 60fps
-	punch_frames = 30
+	punch_frames = GameConstants.get_punch_frames()
 
 
 ## Play the victory animation (Wave)
 ## Triggers the Wave state in the animation state machine
 func play_victory_animation() -> void:
 	# Persist wave signal long enough for the full animation to play
-	# Wave animation is ~2 seconds, so we need at least 120 frames at 60fps
-	wave_frames = 120
+	wave_frames = GameConstants.get_wave_frames()

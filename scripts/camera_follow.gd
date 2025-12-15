@@ -9,8 +9,8 @@ extends Node3D
 
 # Camera positioning parameters
 @export var offset: Vector3 = Vector3(0, 5, 8)  ## Camera position relative to target
-@export var follow_speed: float = 5.0  ## How quickly camera catches up to target (lower = smoother but slower)
-@export var collision_margin: float = 0.3  ## Safety distance from walls for SpringArm
+@export var follow_speed: float = GameConstants.DEFAULT_CAMERA_FOLLOW_SPEED  ## How quickly camera catches up to target (lower = smoother but slower)
+@export var collision_margin: float = GameConstants.DEFAULT_CAMERA_COLLISION_MARGIN  ## Safety distance from walls for SpringArm
 
 # Debug options
 @export_group("Debug")
@@ -26,6 +26,8 @@ extends Node3D
 # Debug tracking
 var _last_spring_length: float = 0.0
 var _collision_detected: bool = false
+var _debug_mesh: ImmediateMesh = null
+var _debug_mesh_instance: MeshInstance3D = null
 
 
 func _ready() -> void:
@@ -33,10 +35,16 @@ func _ready() -> void:
 	if target == null:
 		target = get_tree().get_first_node_in_group("player")
 
-	# If we still don't have a target, print a warning
+	# If we still don't have a target, this is a critical setup error
 	if target == null:
-		push_warning("CameraFollow: No target assigned and no player found in 'player' group")
+		push_error("CameraFollow: CRITICAL - No target assigned and no player found in 'player' group")
+		push_error("  Solution: Either set 'target' export var or add player to 'player' group")
+		assert(false, "CameraFollow: No valid target - camera system cannot function")
 		return
+
+	# Validate SpringArm3D child node exists
+	assert(spring_arm != null, "CameraFollow: SpringArm3D child node not found - check scene hierarchy")
+	assert(camera != null, "CameraFollow: Camera3D child node not found - check SpringArm3D has Camera3D child")
 
 	# Configure SpringArm3D
 	if spring_arm:
@@ -84,22 +92,22 @@ func _draw_debug_info() -> void:
 	if not is_inside_tree():
 		return
 
-	var immediate_mesh: ImmediateMesh = ImmediateMesh.new()
-	var mesh_instance: MeshInstance3D
+	# Initialize debug mesh and instance on first use
+	if _debug_mesh == null:
+		_debug_mesh = ImmediateMesh.new()
 
-	# Find or create debug mesh instance
-	if not has_node("DebugMesh"):
-		mesh_instance = MeshInstance3D.new()
-		mesh_instance.name = "DebugMesh"
-		mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		add_child(mesh_instance)
-	else:
-		mesh_instance = get_node("DebugMesh")
+	if _debug_mesh_instance == null:
+		_debug_mesh_instance = MeshInstance3D.new()
+		_debug_mesh_instance.name = "DebugMesh"
+		_debug_mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_debug_mesh_instance.mesh = _debug_mesh
+		add_child(_debug_mesh_instance)
 
-	mesh_instance.mesh = immediate_mesh
+	# Clear previous frame's debug mesh
+	_debug_mesh.clear_surfaces()
 
 	# Start drawing
-	immediate_mesh.surface_begin(Mesh.PRIMITIVE_LINES)
+	_debug_mesh.surface_begin(Mesh.PRIMITIVE_LINES)
 
 	if debug_draw_raycast and spring_arm:
 		# Draw SpringArm raycast line
@@ -121,24 +129,24 @@ func _draw_debug_info() -> void:
 		var raycast_color = Color.GREEN if not is_compressed else Color.RED
 
 		# Draw line from controller to camera
-		immediate_mesh.surface_set_color(raycast_color)
-		immediate_mesh.surface_add_vertex(spring_start)
-		immediate_mesh.surface_add_vertex(spring_end)
+		_debug_mesh.surface_set_color(raycast_color)
+		_debug_mesh.surface_add_vertex(spring_start)
+		_debug_mesh.surface_add_vertex(spring_end)
 
 		# Draw intended position (if different from actual)
 		if is_compressed:
 			var intended_pos = spring_start - global_transform.basis.z * spring_arm.spring_length
-			immediate_mesh.surface_set_color(Color.YELLOW)
-			immediate_mesh.surface_add_vertex(spring_end)
-			immediate_mesh.surface_add_vertex(intended_pos)
+			_debug_mesh.surface_set_color(Color.YELLOW)
+			_debug_mesh.surface_add_vertex(spring_end)
+			_debug_mesh.surface_add_vertex(intended_pos)
 
 	if debug_draw_positions:
 		# Draw position markers as small cross hairs
-		_draw_crosshair(immediate_mesh, global_position, Color.BLUE, 0.3)  # Controller position
-		_draw_crosshair(immediate_mesh, target.global_position, Color.CYAN, 0.5)  # Target position
-		_draw_crosshair(immediate_mesh, camera.global_position, Color.WHITE, 0.2)  # Camera position
+		_draw_crosshair(_debug_mesh, global_position, Color.BLUE, 0.3)  # Controller position
+		_draw_crosshair(_debug_mesh, target.global_position, Color.CYAN, 0.5)  # Target position
+		_draw_crosshair(_debug_mesh, camera.global_position, Color.WHITE, 0.2)  # Camera position
 
-	immediate_mesh.surface_end()
+	_debug_mesh.surface_end()
 
 	# Console output
 	if debug_console_output and Engine.get_process_frames() % 60 == 0:
