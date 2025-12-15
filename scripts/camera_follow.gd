@@ -143,13 +143,21 @@ func _draw_debug_info() -> void:
 	# Console output
 	if debug_console_output and Engine.get_process_frames() % 60 == 0:
 		var current_length = global_position.distance_to(camera.global_position)
-		print("[Camera Debug]")
-		print("  Controller: ", global_position)
-		print("  Target: ", target.global_position)
-		print("  Camera: ", camera.global_position)
-		print("  SpringArm length: %.2f / %.2f" % [current_length, spring_arm.spring_length])
-		print("  Compressed: ", _collision_detected)
-		print("  Offset: ", offset)
+		var debug_msg = "[Camera Debug]\n"
+		debug_msg += "  Controller: %s\n" % global_position
+		debug_msg += "  Target: %s\n" % target.global_position
+		debug_msg += "  Camera: %s\n" % camera.global_position
+		debug_msg += "  SpringArm length: %.2f / %.2f\n" % [current_length, spring_arm.spring_length]
+		debug_msg += "  Compressed: %s\n" % _collision_detected
+		debug_msg += "  Offset: %s\n" % offset
+		print(debug_msg)
+
+		# Optional: Write to file (uncomment to enable)
+		# var file = FileAccess.open("user://camera_debug.log", FileAccess.WRITE_READ)
+		# if file:
+		#     file.seek_end()
+		#     file.store_string(debug_msg)
+		#     file.close()
 
 
 func _draw_crosshair(mesh: ImmediateMesh, pos: Vector3, color: Color, size: float) -> void:
