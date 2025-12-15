@@ -191,6 +191,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 12)
 script = ExtResource("2_db8qg")
+offset = Vector3(0, 8, 12)
 
 [node name="GameUI" parent="." instance=ExtResource("4_t5xbp")]
 
