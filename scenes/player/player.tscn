@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://dtqr7qwcbhqn4"]
+[gd_scene load_steps=13 format=3 uid="uid://dtqr7qwcbhqn4"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_3vnrf"]
 [ext_resource type="PackedScene" uid="uid://bbpps7b5hld5m" path="res://assets/models/quaternius_platformer/character/Character.gltf" id="2_character"]
@@ -7,6 +7,66 @@
 radius = 0.5
 height = 2.0
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_idle"]
+animation = &"Idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_walk"]
+animation = &"Walk"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jump"]
+animation = &"Jump"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_airborne"]
+animation = &"Jump_Idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_land"]
+animation = &"Jump_Land"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_idle_to_walk"]
+xfade_time = 0.2
+advance_mode = 2
+advance_condition = &"is_moving"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_walk_to_idle"]
+xfade_time = 0.2
+advance_mode = 2
+advance_condition = &"is_idle"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_any_to_jump"]
+xfade_time = 0.1
+advance_mode = 2
+advance_condition = &"is_jumping"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_jump_to_airborne"]
+xfade_time = 0.15
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_airborne_to_land"]
+xfade_time = 0.1
+switch_mode = 2
+advance_mode = 2
+advance_condition = &"has_landed"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_land_to_idle"]
+xfade_time = 0.15
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_root"]
+states/Idle/node = SubResource("AnimationNodeAnimation_idle")
+states/Idle/position = Vector2(350, 100)
+states/Walk/node = SubResource("AnimationNodeAnimation_walk")
+states/Walk/position = Vector2(500, 100)
+states/Jump/node = SubResource("AnimationNodeAnimation_jump")
+states/Jump/position = Vector2(350, 200)
+states/Airborne/node = SubResource("AnimationNodeAnimation_airborne")
+states/Airborne/position = Vector2(500, 200)
+states/Land/node = SubResource("AnimationNodeAnimation_land")
+states/Land/position = Vector2(350, 300)
+transitions = ["Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_idle_to_walk"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_walk_to_idle"), "Idle", "Jump", SubResource("AnimationNodeStateMachineTransition_any_to_jump"), "Walk", "Jump", SubResource("AnimationNodeStateMachineTransition_any_to_jump"), "Jump", "Airborne", SubResource("AnimationNodeStateMachineTransition_jump_to_airborne"), "Airborne", "Land", SubResource("AnimationNodeStateMachineTransition_airborne_to_land"), "Land", "Idle", SubResource("AnimationNodeStateMachineTransition_land_to_idle")]
+graph_offset = Vector2(-50, 0)
+
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
 collision_mask = 1
@@ -14,6 +74,15 @@ script = ExtResource("1_3vnrf")
 
 [node name="CharacterModel" parent="." instance=ExtResource("2_character")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
+
+[node name="AnimationTree" type="AnimationTree" parent="CharacterModel"]
+tree_root = SubResource("AnimationNodeStateMachine_root")
+anim_player = NodePath("AnimationPlayer")
+active = true
+parameters/conditions/is_moving = false
+parameters/conditions/is_idle = false
+parameters/conditions/is_jumping = false
+parameters/conditions/has_landed = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

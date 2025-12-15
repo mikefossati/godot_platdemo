@@ -14,6 +14,10 @@ var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 # Death boundary - if player falls below this Y position, trigger game over
 const DEATH_Y: float = -10.0
 
+# Animation
+@onready var animation_tree: AnimationTree = $CharacterModel/AnimationTree
+var was_on_floor: bool = true  # Track previous frame's ground state for landing detection
+
 
 func _ready() -> void:
 	# Set up the player when it enters the scene
@@ -61,6 +65,9 @@ func _physics_process(delta: float) -> void:
 	# It uses the velocity vector and automatically handles sliding along surfaces
 	move_and_slide()
 
+	# Update character animations based on current state
+	update_animation()
+
 	# Check if player has fallen off the level
 	if global_position.y < DEATH_Y:
 		die()
@@ -74,3 +81,22 @@ func die() -> void:
 ## Called when player collides with a collectible
 func collect_item() -> void:
 	GameManager.collect_item()
+
+
+## Update character animations based on movement state
+func update_animation() -> void:
+	# Determine current movement state
+	var horizontal_velocity := Vector2(velocity.x, velocity.z)
+	var is_moving := horizontal_velocity.length() > 0.1
+	var is_grounded := is_on_floor()
+	var is_jumping := not is_grounded and velocity.y > 0
+	var just_landed := is_grounded and not was_on_floor
+
+	# Update animation tree conditions
+	animation_tree.set("parameters/conditions/is_moving", is_moving)
+	animation_tree.set("parameters/conditions/is_idle", not is_moving)
+	animation_tree.set("parameters/conditions/is_jumping", is_jumping)
+	animation_tree.set("parameters/conditions/has_landed", just_landed)
+
+	# Store current ground state for next frame
+	was_on_floor = is_grounded
