@@ -170,6 +170,20 @@ const DEFAULT_DEATH_Y: float = -10.0
 
 
 # ==============================================================================
+# MOVING PLATFORMS
+# ==============================================================================
+
+## Default platform movement speed (units per second)
+const DEFAULT_PLATFORM_SPEED: float = 2.0
+
+## Default pause duration at platform endpoints (seconds)
+const DEFAULT_PLATFORM_PAUSE: float = 0.5
+
+## Minimum platform movement distance to be considered valid
+const MIN_PLATFORM_MOVE_DISTANCE: float = 0.1
+
+
+# ==============================================================================
 # SCORING
 # ==============================================================================
 

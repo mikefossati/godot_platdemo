@@ -54,7 +54,11 @@ func _initialize_levels() -> void:
 		1,
 		"Learn the basics of movement and jumping.",
 		"",
-		45.0
+		20.0,  # gold_time
+		30.0,  # silver_time
+		45.0,  # bronze_time
+		true,  # require_all_collectibles
+		false  # require_perfect_run
 	)
 	level_registry.append(level_1)
 
@@ -66,7 +70,11 @@ func _initialize_levels() -> void:
 		2,
 		"Test your platforming skills with trickier jumps.",
 		"level_1",
-		60.0
+		30.0,  # gold_time
+		45.0,  # silver_time
+		60.0,  # bronze_time
+		true,  # require_all_collectibles
+		false  # require_perfect_run
 	)
 	level_registry.append(level_2)
 
@@ -78,7 +86,11 @@ func _initialize_levels() -> void:
 		3,
 		"Master the art of precision platforming.",
 		"level_2",
-		75.0
+		45.0,  # gold_time
+		60.0,  # silver_time
+		75.0,  # bronze_time
+		true,  # require_all_collectibles
+		false  # require_perfect_run
 	)
 	level_registry.append(level_3)
 
@@ -150,6 +162,11 @@ func load_level(level_index: int) -> void:
 	reset_game()
 	load_scene(current_level_data.scene_path)
 
+	# Start level session for time/death tracking (after scene loads)
+	await get_tree().process_frame
+	if LevelSession:
+		LevelSession.start_session()
+
 
 ## Load a specific level by ID
 func load_level_by_id(level_id: String) -> void:
@@ -190,20 +207,63 @@ func complete_current_level() -> void:
 
 	var level_id = current_level_data.level_id
 
-	# Update stats
+	# End level session and get stats
+	var session_stats = {}
+	if LevelSession and LevelSession.is_active():
+		session_stats = LevelSession.end_session()
+	else:
+		# Fallback stats if session wasn't active
+		session_stats = {
+			"completion_time": 0.0,
+			"death_count": 0,
+			"collectibles_gathered": collectibles_gathered,
+			"total_collectibles": total_collectibles,
+			"perfect_run": true,
+			"all_collectibles": collectibles_gathered >= total_collectibles
+		}
+
+	# Calculate star rating
+	var stars = 0
+	if LevelSession:
+		stars = LevelSession.calculate_star_rating(current_level_data, session_stats)
+
+	# Initialize stats if first completion
 	if not level_stats.has(level_id):
 		level_stats[level_id] = {
 			"completed": false,
 			"best_score": 0,
-			"times_played": 0
+			"best_time": 999999.0,
+			"best_stars": 0,
+			"times_played": 0,
+			"total_deaths": 0
 		}
 
+	# Update stats
 	level_stats[level_id]["completed"] = true
 	level_stats[level_id]["times_played"] += 1
+
+	# Handle new fields with backward compatibility
+	if not level_stats[level_id].has("total_deaths"):
+		level_stats[level_id]["total_deaths"] = 0
+	level_stats[level_id]["total_deaths"] += session_stats.get("death_count", 0)
 
 	# Update best score if better
 	if score > level_stats[level_id]["best_score"]:
 		level_stats[level_id]["best_score"] = score
+
+	# Update best time if better (with backward compatibility)
+	if not level_stats[level_id].has("best_time"):
+		level_stats[level_id]["best_time"] = 999999.0
+	var completion_time = session_stats.get("completion_time", 0.0)
+	if completion_time > 0 and completion_time < level_stats[level_id]["best_time"]:
+		level_stats[level_id]["best_time"] = completion_time
+
+	# Update best stars if better (with backward compatibility)
+	if not level_stats[level_id].has("best_stars"):
+		level_stats[level_id]["best_stars"] = 0
+	if stars > level_stats[level_id]["best_stars"]:
+		level_stats[level_id]["best_stars"] = stars
+		print("New best! Achieved %d stars on %s" % [stars, current_level_data.level_name])
 
 	# Unlock next level
 	var next_index = current_level_index + 1
@@ -376,7 +436,7 @@ func _validate_level_stats(data: Variant) -> bool:
 			push_error("level_stats[%s] is not a Dictionary" % level_id)
 			return false
 
-		# Validate required fields
+		# Validate required fields (with backward compatibility)
 		if not stats.has("completed") or not stats["completed"] is bool:
 			push_error("level_stats[%s] missing or invalid 'completed'" % level_id)
 			return false
@@ -388,6 +448,9 @@ func _validate_level_stats(data: Variant) -> bool:
 		if not stats.has("times_played") or not stats["times_played"] is int:
 			push_error("level_stats[%s] missing or invalid 'times_played'" % level_id)
 			return false
+
+		# Optional new fields (will be added on next save if missing)
+		# No validation failure if missing - backward compatibility
 
 	return true
 
