@@ -111,8 +111,9 @@ static func calculate_platform_collision_size(model_scale: Vector3) -> Vector3:
 
 
 ## Calculate collision position for a scaled platform model
-static func calculate_platform_collision_position(model_scale: Vector3) -> Vector3:
+static func calculate_platform_collision_position(_model_scale: Vector3) -> Vector3:
 	# Model is offset by 0.25, collision should match
+	# Note: Position is constant regardless of scale (always centered at Y=0.25)
 	return Vector3(0, PLATFORM_MODEL_Y_OFFSET, 0)
 
 
