@@ -39,16 +39,16 @@ theme_override_font_sizes/font_size = 64
 text = "LEVEL COMPLETE!"
 horizontal_alignment = 1
 
+[node name="LevelNameLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 36
+text = "Level Name"
+horizontal_alignment = 1
+
 [node name="Spacer1" type="Control" parent="CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-
-[node name="MessageLabel" type="Label" parent="CenterContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
-theme_override_font_sizes/font_size = 28
-text = "Congratulations! All stars collected!"
-horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
@@ -72,14 +72,20 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 
-[node name="ReplayButton" type="Button" parent="CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(200, 50)
+[node name="NextLevelButton" type="Button" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "REPLAY"
+theme_override_font_sizes/font_size = 28
+text = "NEXT LEVEL ▶"
 
-[node name="MenuButton" type="Button" parent="CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(200, 50)
+[node name="ReplayButton" type="Button" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 50)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "MAIN MENU"
+text = "REPLAY LEVEL"
+
+[node name="LevelSelectButton" type="Button" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "LEVEL SELECT"
