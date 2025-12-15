@@ -224,7 +224,7 @@ Add state for "Wave" or "Yes" animation.
 
 **Check:**
 1. AnimationTree is `active = true`
-2. AnimationPlayer path is correct: `NodePath("AnimationPlayer")`
+2. AnimationPlayer path is correct: `NodePath("../AnimationPlayer")` (sibling reference)
 3. Animation names match GLTF exactly (case-sensitive)
 4. Conditions are being set in update_animation()
 
