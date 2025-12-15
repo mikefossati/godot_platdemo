@@ -23,7 +23,7 @@ animation = &"Jump_Idle"
 animation = &"Jump_Land"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_start_to_idle"]
-advance_mode = 0
+advance_mode = 1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_idle_to_walk"]
 xfade_time = 0.2
