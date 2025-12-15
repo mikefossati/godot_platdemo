@@ -60,6 +60,12 @@ func _process(delta: float) -> void:
 	var look_at_position: Vector3 = target.global_position
 	look_at_position.y += 1.0  # Look at a point slightly above the player's feet
 
-	# Update rotation to look at target
-	# The spring arm will extend from here in its local -Z direction
-	look_at(look_at_position, Vector3.UP)
+	# Check if look direction and UP vector are not colinear (parallel)
+	# to avoid rotation issues
+	var look_direction = (look_at_position - global_position).normalized()
+	var dot_product = abs(look_direction.dot(Vector3.UP))
+
+	# Only update rotation if vectors aren't nearly parallel (dot product < 0.99)
+	# When dot product is close to 1.0, vectors are colinear
+	if dot_product < 0.99:
+		look_at(look_at_position, Vector3.UP)
