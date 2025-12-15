@@ -1,4 +1,4 @@
-class_name GameConstants
+extends Node
 
 ## Game Constants - Centralized configuration values
 ## This file contains all magic numbers and measurements used throughout the game
