@@ -5,9 +5,6 @@ extends Control
 @onready var level_grid: GridContainer = $MarginContainer/VBoxContainer/LevelGrid
 @onready var back_button: Button = $MarginContainer/VBoxContainer/BackButton
 
-# Level button scene (created dynamically)
-const LEVEL_BUTTON_SCENE = preload("res://scenes/ui/level_button.tscn")
-
 
 func _ready() -> void:
 	# Connect back button
