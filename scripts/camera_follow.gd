@@ -45,22 +45,20 @@ func _process(delta: float) -> void:
 	if target == null:
 		return
 
-	# Smoothly follow the player's position
-	# The spring arm will automatically handle collision and pull camera closer if needed
+	# Position controller at the player
 	var target_position: Vector3 = target.global_position
 	global_position = global_position.lerp(target_position, follow_speed * delta)
 
-	# Make the camera controller (and spring arm) look at the target
-	# This keeps the camera oriented toward the player
-	var look_at_position: Vector3 = target.global_position
-	look_at_position.y += 1.0  # Look at a point slightly above the player's feet
+	# Make the camera controller face AWAY from the player (in the offset direction)
+	# This way when SpringArm extends backward, it points toward the offset
+	# SpringArm extends along local -Z, so we want -Z to point in offset direction
+	# This means +Z (forward) should point opposite to offset
+	var look_away_position: Vector3 = target.global_position - offset
+	look_away_position.y += 1.0
 
-	# Check if look direction and UP vector are not colinear (parallel)
-	# to avoid rotation issues
-	var look_direction = (look_at_position - global_position).normalized()
+	# Check if look direction and UP vector are not colinear
+	var look_direction = (look_away_position - global_position).normalized()
 	var dot_product = abs(look_direction.dot(Vector3.UP))
 
-	# Only update rotation if vectors aren't nearly parallel (dot product < 0.99)
-	# When dot product is close to 1.0, vectors are colinear
 	if dot_product < 0.99:
-		look_at(look_at_position, Vector3.UP)
+		look_at(look_away_position, Vector3.UP)
