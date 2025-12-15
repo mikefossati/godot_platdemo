@@ -45,7 +45,7 @@ func _create_level_button(index: int, level_data: LevelData) -> Button:
 	# Build button text
 	var button_text = ""
 	button_text += level_data.level_name + "\n"
-	button_text += "★ " * level_data.difficulty + "\n"
+	button_text += "★ ".repeat(level_data.difficulty) + "\n"
 
 	if not is_unlocked:
 		button_text += "🔒 LOCKED"
