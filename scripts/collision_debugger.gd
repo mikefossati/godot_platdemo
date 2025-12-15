@@ -85,7 +85,7 @@ func debug_platform_info(platform: StaticBody3D) -> void:
 			print("  Mesh AABB center: ", aabb.get_center())
 
 			# Calculate actual bounds in world space
-			var scaled_size = aabb.size * model.scale
+			var _scaled_size = aabb.size * model.scale
 			var world_bottom = model.global_position.y + (aabb.get_center().y - aabb.size.y / 2) * model.scale.y
 			var world_top = model.global_position.y + (aabb.get_center().y + aabb.size.y / 2) * model.scale.y
 			print("  Visual bottom (world): ", world_bottom)
