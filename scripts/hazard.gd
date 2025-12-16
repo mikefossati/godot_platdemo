@@ -210,12 +210,14 @@ func _trigger_laser() -> void:
 	# Enable laser collision
 	monitoring = true
 	# Visual would show laser beam
+	pass
 
 
 ## Type-specific: Crusher activation
 func _trigger_crusher() -> void:
 	# Start crushing animation
 	# Move crusher to crush position then back
+	pass
 
 
 ## Reset hazard to initial state (for level reset)
