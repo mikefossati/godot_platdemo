@@ -94,6 +94,38 @@ func _initialize_levels() -> void:
 	)
 	level_registry.append(level_3)
 
+	# Level 4 - Moving Platforms (Linear)
+	var level_4 = LevelData.new(
+		"level_4",
+		"Linear Motion",
+		"res://scenes/levels/level_4.tscn",
+		3,
+		"Navigate moving platforms with precise timing.",
+		"level_3",
+		50.0,  # gold_time
+		70.0,  # silver_time
+		90.0,  # bronze_time
+		true,  # require_all_collectibles
+		false  # require_perfect_run
+	)
+	level_registry.append(level_4)
+
+	# Level 5 - Moving Platforms (Circular)
+	var level_5 = LevelData.new(
+		"level_5",
+		"Orbital Dance",
+		"res://scenes/levels/level_5.tscn",
+		4,
+		"Master circular platforms in a rotating ballet.",
+		"level_4",
+		60.0,  # gold_time
+		80.0,  # silver_time
+		100.0,  # bronze_time
+		true,  # require_all_collectibles
+		false  # require_perfect_run
+	)
+	level_registry.append(level_5)
+
 
 ## Resets the current session state (not progression)
 func reset_game() -> void:
