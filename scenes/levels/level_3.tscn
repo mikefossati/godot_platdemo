@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://level_3"]
+[gd_scene load_steps=12 format=3 uid="uid://level_3"]
 
 [ext_resource type="PackedScene" uid="uid://dtqr7qwcbhqn4" path="res://scenes/player/player.tscn" id="1_f4xol"]
 [ext_resource type="Script" path="res://scripts/camera_follow.gd" id="2_db8qg"]
@@ -9,9 +9,7 @@
 [ext_resource type="Script" path="res://scripts/collision_debugger.gd" id="7_debugger"]
 [ext_resource type="PackedScene" uid="uid://dq9vh8wm4k2lp5" path="res://scenes/ui/game_hud.tscn" id="8_hud"]
 [ext_resource type="PackedScene" uid="uid://cpq4vh7wm3k9lp" path="res://scenes/ui/pause_menu.tscn" id="9_pause"]
-[ext_resource type="PackedScene" uid="uid://bvh8wm3k5lp9r" path="res://scenes/platforms/moving_platform_linear.tscn" id="10_moving_linear"]
-[ext_resource type="PackedScene" uid="uid://c8vh2wm9k7lq3s" path="res://scenes/platforms/moving_platform_circular.tscn" id="11_moving_circular"]
-[ext_resource type="PackedScene" uid="uid://dk9vh3wm2k8lq4" path="res://scenes/hazards/spike.tscn" id="12_spike"]
+[ext_resource type="PackedScene" uid="uid://dk9vh3wm2k8lq4" path="res://scenes/hazards/spike.tscn" id="10_spike"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_y4hqf"]
 size = Vector3(30, 1, 30)
@@ -212,27 +210,16 @@ margin = 0.3
 
 [node name="PauseMenu" parent="." instance=ExtResource("9_pause")]
 
-[node name="MovingPlatformLinear1" parent="." instance=ExtResource("10_moving_linear")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3, -7)
-end_position = Vector3(8, 0, 0)
-speed = 2.5
-pause_at_ends = 0.3
-
-[node name="MovingPlatformCircular1" parent="." instance=ExtResource("11_moving_circular")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
-orbit_radius = Vector2(5, 5)
-speed = 1.2
-
-[node name="Spike1" parent="." instance=ExtResource("12_spike")]
+[node name="Spike1" parent="." instance=ExtResource("10_spike")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, -5)
 
-[node name="Spike2" parent="." instance=ExtResource("12_spike")]
+[node name="Spike2" parent="." instance=ExtResource("10_spike")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, 5)
 
-[node name="Spike3" parent="." instance=ExtResource("12_spike")]
+[node name="Spike3" parent="." instance=ExtResource("10_spike")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 7)
 
-[node name="Spike4" parent="." instance=ExtResource("12_spike")]
+[node name="Spike4" parent="." instance=ExtResource("10_spike")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -7)
 
 [node name="CollisionDebugger" type="Node" parent="."]

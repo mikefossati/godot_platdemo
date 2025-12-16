@@ -1,0 +1,167 @@
+[gd_scene load_steps=14 format=3 uid="uid://level_4"]
+
+[ext_resource type="PackedScene" uid="uid://dtqr7qwcbhqn4" path="res://scenes/player/player.tscn" id="1_f4xol"]
+[ext_resource type="Script" path="res://scripts/camera_follow.gd" id="2_db8qg"]
+[ext_resource type="PackedScene" uid="uid://btkb8m3w0lnor" path="res://scenes/collectibles/collectible.tscn" id="3_6e0wl"]
+[ext_resource type="PackedScene" uid="uid://c3eiqffjxu6qw" path="res://scenes/ui/game_ui.tscn" id="4_t5xbp"]
+[ext_resource type="PackedScene" uid="uid://58dujpts7581" path="res://assets/models/quaternius_platformer/platforms/Cube_Grass_Single.gltf" id="5_platform_grass"]
+[ext_resource type="PackedScene" uid="uid://rvt20iwpxutm" path="res://assets/models/quaternius_platformer/platforms/Cube_Dirt_Single.gltf" id="6_platform_dirt"]
+[ext_resource type="Script" path="res://scripts/collision_debugger.gd" id="7_debugger"]
+[ext_resource type="PackedScene" uid="uid://dq9vh8wm4k2lp5" path="res://scenes/ui/game_hud.tscn" id="8_hud"]
+[ext_resource type="PackedScene" uid="uid://cpq4vh7wm3k9lp" path="res://scenes/ui/pause_menu.tscn" id="9_pause"]
+[ext_resource type="PackedScene" uid="uid://bvh8wm3k5lp9r" path="res://scenes/platforms/moving_platform_linear.tscn" id="10_moving_linear"]
+[ext_resource type="PackedScene" uid="uid://dk9vh3wm2k8lq4" path="res://scenes/hazards/spike.tscn" id="11_spike"]
+
+[sub_resource type="Environment" id="Environment_default"]
+background_mode = 1
+background_color = Color(0.5, 0.65, 0.85, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.8, 0.9, 1, 1)
+ambient_light_energy = 0.8
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.3
+glow_strength = 0.8
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_platform"]
+size = Vector3(4.5, 1, 4.5)
+
+[node name="Level4" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_default")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 10, 0)
+light_color = Color(1, 0.98, 0.9, 1)
+light_energy = 1.2
+shadow_enabled = true
+shadow_bias = 0.05
+shadow_opacity = 0.7
+
+[node name="StartPlatform" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 0)
+
+[node name="PlatformModel" parent="StartPlatform" instance=ExtResource("5_platform_grass")]
+transform = Transform3D(2, 0, 0, 0, 0.5, 0, 0, 0, 2, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StartPlatform"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform")
+
+[node name="EndPlatform" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 0)
+
+[node name="PlatformModel" parent="EndPlatform" instance=ExtResource("5_platform_grass")]
+transform = Transform3D(2, 0, 0, 0, 0.5, 0, 0, 0, 2, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EndPlatform"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform")
+
+[node name="MidPlatform1" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 3, 6)
+
+[node name="PlatformModel" parent="MidPlatform1" instance=ExtResource("5_platform_grass")]
+transform = Transform3D(2, 0, 0, 0, 0.5, 0, 0, 0, 2, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MidPlatform1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform")
+
+[node name="MidPlatform2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 3, -6)
+
+[node name="PlatformModel" parent="MidPlatform2" instance=ExtResource("5_platform_grass")]
+transform = Transform3D(2, 0, 0, 0, 0.5, 0, 0, 0, 2, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MidPlatform2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform")
+
+[node name="HighPlatform" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+
+[node name="PlatformModel" parent="HighPlatform" instance=ExtResource("5_platform_grass")]
+transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HighPlatform"]
+transform = Transform3D(0.75, 0, 0, 0, 1, 0, 0, 0, 0.75, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform")
+
+[node name="MovingPlatform1" parent="." instance=ExtResource("10_moving_linear")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1.5, 0)
+end_position = Vector3(0, 0, 6)
+speed = 2.0
+pause_at_ends = 0.8
+
+[node name="MovingPlatform2" parent="." instance=ExtResource("10_moving_linear")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 1.5, -6)
+end_position = Vector3(-16, 0, 0)
+speed = 3.0
+pause_at_ends = 0.5
+
+[node name="MovingPlatform3" parent="." instance=ExtResource("10_moving_linear")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 4.5, 6)
+end_position = Vector3(8, 0, -12)
+speed = 2.5
+pause_at_ends = 0.3
+
+[node name="MovingPlatform4" parent="." instance=ExtResource("10_moving_linear")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+end_position = Vector3(0, 2, 0)
+speed = 1.5
+pause_at_ends = 1.0
+
+[node name="Collectibles" type="Node3D" parent="."]
+
+[node name="Collectible1" parent="Collectibles" instance=ExtResource("3_6e0wl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 3)
+
+[node name="Collectible2" parent="Collectibles" instance=ExtResource("3_6e0wl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -3)
+
+[node name="Collectible3" parent="Collectibles" instance=ExtResource("3_6e0wl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, -6)
+
+[node name="Collectible4" parent="Collectibles" instance=ExtResource("3_6e0wl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 5, 6)
+
+[node name="Collectible5" parent="Collectibles" instance=ExtResource("3_6e0wl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, 0)
+
+[node name="Hazards" type="Node3D" parent="."]
+
+[node name="Spike1" parent="Hazards" instance=ExtResource("11_spike")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, -1, 0)
+
+[node name="Spike2" parent="Hazards" instance=ExtResource("11_spike")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, -1, 0)
+
+[node name="Spike3" parent="Hazards" instance=ExtResource("11_spike")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -3)
+
+[node name="Player" parent="." groups=["player"] instance=ExtResource("1_f4xol")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 0)
+
+[node name="CameraController" type="Node3D" parent="."]
+script = ExtResource("2_db8qg")
+offset = Vector3(0, 8, 12)
+enable_debug = false
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraController"]
+spring_length = 13.0
+collision_mask = 1
+margin = 0.3
+
+[node name="Camera3D" type="Camera3D" parent="CameraController/SpringArm3D"]
+
+[node name="GameUI" parent="." instance=ExtResource("4_t5xbp")]
+
+[node name="GameHUD" parent="." instance=ExtResource("8_hud")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("9_pause")]
+
+[node name="CollisionDebugger" type="Node" parent="."]
+script = ExtResource("7_debugger")
+enable_validation = false
