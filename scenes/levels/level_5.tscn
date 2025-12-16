@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://level_5"]
+[gd_scene load_steps=15 format=3 uid="uid://level_5"]
 
 [ext_resource type="PackedScene" uid="uid://dtqr7qwcbhqn4" path="res://scenes/player/player.tscn" id="1_f4xol"]
 [ext_resource type="Script" path="res://scripts/camera_follow.gd" id="2_db8qg"]
@@ -23,6 +23,9 @@ glow_enabled = true
 glow_intensity = 0.4
 glow_strength = 0.9
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(40, 1, 40)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_platform"]
 size = Vector3(4.5, 1, 4.5)
 
@@ -39,6 +42,42 @@ shadow_enabled = true
 shadow_bias = 0.05
 shadow_opacity = 0.7
 
+[node name="Ground" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0)
+
+[node name="GroundTiles" type="Node3D" parent="Ground"]
+
+[node name="Tile1" parent="Ground/GroundTiles" instance=ExtResource("6_platform_dirt")]
+transform = Transform3D(5, 0, 0, 0, 0.5, 0, 0, 0, 5, -10, 0.25, -10)
+
+[node name="Tile2" parent="Ground/GroundTiles" instance=ExtResource("6_platform_dirt")]
+transform = Transform3D(5, 0, 0, 0, 0.5, 0, 0, 0, 5, -10, 0.25, 0)
+
+[node name="Tile3" parent="Ground/GroundTiles" instance=ExtResource("6_platform_dirt")]
+transform = Transform3D(5, 0, 0, 0, 0.5, 0, 0, 0, 5, -10, 0.25, 10)
+
+[node name="Tile4" parent="Ground/GroundTiles" instance=ExtResource("6_platform_dirt")]
+transform = Transform3D(5, 0, 0, 0, 0.5, 0, 0, 0, 5, 0, 0.25, -10)
+
+[node name="Tile5" parent="Ground/GroundTiles" instance=ExtResource("6_platform_dirt")]
+transform = Transform3D(5, 0, 0, 0, 0.5, 0, 0, 0, 5, 0, 0.25, 0)
+
+[node name="Tile6" parent="Ground/GroundTiles" instance=ExtResource("6_platform_dirt")]
+transform = Transform3D(5, 0, 0, 0, 0.5, 0, 0, 0, 5, 0, 0.25, 10)
+
+[node name="Tile7" parent="Ground/GroundTiles" instance=ExtResource("6_platform_dirt")]
+transform = Transform3D(5, 0, 0, 0, 0.5, 0, 0, 0, 5, 10, 0.25, -10)
+
+[node name="Tile8" parent="Ground/GroundTiles" instance=ExtResource("6_platform_dirt")]
+transform = Transform3D(5, 0, 0, 0, 0.5, 0, 0, 0, 5, 10, 0.25, 0)
+
+[node name="Tile9" parent="Ground/GroundTiles" instance=ExtResource("6_platform_dirt")]
+transform = Transform3D(5, 0, 0, 0, 0.5, 0, 0, 0, 5, 10, 0.25, 10)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_ground")
+
 [node name="CenterPlatform" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
@@ -50,7 +89,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 shape = SubResource("BoxShape3D_platform")
 
 [node name="OuterPlatform1" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
 
 [node name="PlatformModel" parent="OuterPlatform1" instance=ExtResource("5_platform_grass")]
 transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
@@ -60,7 +99,7 @@ transform = Transform3D(0.75, 0, 0, 0, 1, 0, 0, 0, 0.75, 0, 0.25, 0)
 shape = SubResource("BoxShape3D_platform")
 
 [node name="OuterPlatform2" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
 
 [node name="PlatformModel" parent="OuterPlatform2" instance=ExtResource("5_platform_grass")]
 transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
@@ -70,7 +109,7 @@ transform = Transform3D(0.75, 0, 0, 0, 1, 0, 0, 0, 0.75, 0, 0.25, 0)
 shape = SubResource("BoxShape3D_platform")
 
 [node name="OuterPlatform3" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
 
 [node name="PlatformModel" parent="OuterPlatform3" instance=ExtResource("5_platform_grass")]
 transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
@@ -80,7 +119,7 @@ transform = Transform3D(0.75, 0, 0, 0, 1, 0, 0, 0, 0.75, 0, 0.25, 0)
 shape = SubResource("BoxShape3D_platform")
 
 [node name="OuterPlatform4" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 0)
 
 [node name="PlatformModel" parent="OuterPlatform4" instance=ExtResource("5_platform_grass")]
 transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
@@ -101,52 +140,55 @@ shape = SubResource("BoxShape3D_platform")
 
 [node name="MovingPlatformCircular1" parent="." instance=ExtResource("10_moving_circular")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-orbit_radius = Vector2(4, 4)
-speed = 1.2
+orbit_radius = Vector2(5, 5)
+speed = 1.0
 clockwise = false
 
 [node name="MovingPlatformCircular2" parent="." instance=ExtResource("10_moving_circular")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
-orbit_radius = Vector2(6, 6)
-speed = 0.8
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
+orbit_radius = Vector2(7, 7)
+speed = 0.7
 clockwise = true
 
 [node name="MovingPlatformCircular3" parent="." instance=ExtResource("10_moving_circular")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
-orbit_radius = Vector2(3, 3)
-speed = 1.5
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.5, 0)
+orbit_radius = Vector2(4, 4)
+speed = 1.3
 clockwise = false
 
 [node name="Collectibles" type="Node3D" parent="."]
 
 [node name="Collectible1" parent="Collectibles" instance=ExtResource("3_6e0wl")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 3, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.5, 0)
 
 [node name="Collectible2" parent="Collectibles" instance=ExtResource("3_6e0wl")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 5)
 
 [node name="Collectible3" parent="Collectibles" instance=ExtResource("3_6e0wl")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 5, 0)
 
 [node name="Collectible4" parent="Collectibles" instance=ExtResource("3_6e0wl")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -7)
 
 [node name="Collectible5" parent="Collectibles" instance=ExtResource("3_6e0wl")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 4)
 
 [node name="Hazards" type="Node3D" parent="."]
 
 [node name="Spike1" parent="Hazards" instance=ExtResource("11_spike")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -1, 2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, -4.5, 3)
 
 [node name="Spike2" parent="Hazards" instance=ExtResource("11_spike")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1, 2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, -4.5, 3)
 
 [node name="Spike3" parent="Hazards" instance=ExtResource("11_spike")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -1, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, -4.5, -3)
 
 [node name="Spike4" parent="Hazards" instance=ExtResource("11_spike")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, -4.5, -3)
+
+[node name="Spike5" parent="Hazards" instance=ExtResource("11_spike")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, 0)
 
 [node name="Player" parent="." groups=["player"] instance=ExtResource("1_f4xol")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
