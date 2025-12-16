@@ -182,13 +182,14 @@ func _update_visual_feedback() -> void:
 	# This will be overridden by specific hazard implementations
 	# or connected to visual materials/shaders
 
-	# For now, basic modulation
-	if _is_warning:
-		modulate = warning_color
-	elif _is_active:
-		modulate = danger_color
-	else:
-		modulate = Color(0.5, 0.5, 0.5, 0.3)  # Inactive/respawning
+	# NOTE: Base implementation does nothing because Area3D doesn't have visual properties
+	# Specific hazard scenes should override this to modify their MeshInstance3D materials
+	# Example for child hazards:
+	#   var mesh = get_node("Visual") as MeshInstance3D
+	#   if mesh and mesh.material_override:
+	#       if _is_warning:
+	#           mesh.material_override.albedo_color = warning_color
+	pass
 
 
 ## Type-specific: Falling block behavior
