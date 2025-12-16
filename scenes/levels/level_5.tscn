@@ -138,6 +138,86 @@ transform = Transform3D(2, 0, 0, 0, 0.5, 0, 0, 0, 2, 0, 0.25, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 shape = SubResource("BoxShape3D_platform")
 
+[node name="RecoveryPlatform1" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, -3, 0)
+
+[node name="PlatformModel" parent="RecoveryPlatform1" instance=ExtResource("5_platform_grass")]
+transform = Transform3D(1.2, 0, 0, 0, 0.5, 0, 0, 0, 1.2, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RecoveryPlatform1"]
+transform = Transform3D(0.6, 0, 0, 0, 1, 0, 0, 0, 0.6, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform")
+
+[node name="RecoveryPlatform2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, -3, 0)
+
+[node name="PlatformModel" parent="RecoveryPlatform2" instance=ExtResource("5_platform_grass")]
+transform = Transform3D(1.2, 0, 0, 0, 0.5, 0, 0, 0, 1.2, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RecoveryPlatform2"]
+transform = Transform3D(0.6, 0, 0, 0, 1, 0, 0, 0, 0.6, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform")
+
+[node name="RecoveryPlatform3" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, -7)
+
+[node name="PlatformModel" parent="RecoveryPlatform3" instance=ExtResource("5_platform_grass")]
+transform = Transform3D(1.2, 0, 0, 0, 0.5, 0, 0, 0, 1.2, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RecoveryPlatform3"]
+transform = Transform3D(0.6, 0, 0, 0, 1, 0, 0, 0, 0.6, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform")
+
+[node name="RecoveryPlatform4" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 7)
+
+[node name="PlatformModel" parent="RecoveryPlatform4" instance=ExtResource("5_platform_grass")]
+transform = Transform3D(1.2, 0, 0, 0, 0.5, 0, 0, 0, 1.2, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RecoveryPlatform4"]
+transform = Transform3D(0.6, 0, 0, 0, 1, 0, 0, 0, 0.6, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform")
+
+[node name="RecoveryPlatform5" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -1.5, -5)
+
+[node name="PlatformModel" parent="RecoveryPlatform5" instance=ExtResource("5_platform_grass")]
+transform = Transform3D(1.2, 0, 0, 0, 0.5, 0, 0, 0, 1.2, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RecoveryPlatform5"]
+transform = Transform3D(0.6, 0, 0, 0, 1, 0, 0, 0, 0.6, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform")
+
+[node name="RecoveryPlatform6" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -1.5, -5)
+
+[node name="PlatformModel" parent="RecoveryPlatform6" instance=ExtResource("5_platform_grass")]
+transform = Transform3D(1.2, 0, 0, 0, 0.5, 0, 0, 0, 1.2, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RecoveryPlatform6"]
+transform = Transform3D(0.6, 0, 0, 0, 1, 0, 0, 0, 0.6, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform")
+
+[node name="RecoveryPlatform7" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -1.5, 5)
+
+[node name="PlatformModel" parent="RecoveryPlatform7" instance=ExtResource("5_platform_grass")]
+transform = Transform3D(1.2, 0, 0, 0, 0.5, 0, 0, 0, 1.2, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RecoveryPlatform7"]
+transform = Transform3D(0.6, 0, 0, 0, 1, 0, 0, 0, 0.6, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform")
+
+[node name="RecoveryPlatform8" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -1.5, 5)
+
+[node name="PlatformModel" parent="RecoveryPlatform8" instance=ExtResource("5_platform_grass")]
+transform = Transform3D(1.2, 0, 0, 0, 0.5, 0, 0, 0, 1.2, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RecoveryPlatform8"]
+transform = Transform3D(0.6, 0, 0, 0, 1, 0, 0, 0, 0.6, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform")
+
 [node name="MovingPlatformCircular1" parent="." instance=ExtResource("10_moving_circular")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 orbit_radius = Vector2(5, 5)
