@@ -1,0 +1,195 @@
+[gd_scene load_steps=2 format=3 uid="uid://br3vh9wm5k3lp6"]
+
+[ext_resource type="Script" path="res://scripts/settings_menu.gd" id="1_settings_script"]
+
+[node name="SettingsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_settings_script")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="TabContainer" type="TabContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -280.0
+offset_right = 400.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Audio" type="VBoxContainer" parent="TabContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="MasterVolume" type="HBoxContainer" parent="TabContainer/Audio"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Audio/MasterVolume"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Master Volume"
+
+[node name="Slider" type="HSlider" parent="TabContainer/Audio/MasterVolume"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="ValueLabel" type="Label" parent="TabContainer/Audio/MasterVolume"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "100%"
+horizontal_alignment = 2
+
+[node name="MusicVolume" type="HBoxContainer" parent="TabContainer/Audio"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Audio/MusicVolume"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Music Volume"
+
+[node name="Slider" type="HSlider" parent="TabContainer/Audio/MusicVolume"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+value = 0.8
+
+[node name="ValueLabel" type="Label" parent="TabContainer/Audio/MusicVolume"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "80%"
+horizontal_alignment = 2
+
+[node name="SFXVolume" type="HBoxContainer" parent="TabContainer/Audio"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Audio/SFXVolume"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "SFX Volume"
+
+[node name="Slider" type="HSlider" parent="TabContainer/Audio/SFXVolume"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="ValueLabel" type="Label" parent="TabContainer/Audio/SFXVolume"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "100%"
+horizontal_alignment = 2
+
+[node name="MuteCheckBox" type="CheckBox" parent="TabContainer/Audio"]
+layout_mode = 2
+text = "Mute All Audio"
+
+[node name="Display" type="VBoxContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="FullscreenCheckBox" type="CheckBox" parent="TabContainer/Display"]
+layout_mode = 2
+text = "Fullscreen"
+
+[node name="VsyncCheckBox" type="CheckBox" parent="TabContainer/Display"]
+layout_mode = 2
+button_pressed = true
+text = "VSync"
+
+[node name="ResolutionLabel" type="Label" parent="TabContainer/Display"]
+layout_mode = 2
+text = "Resolution (Windowed Mode)"
+
+[node name="ResolutionOption" type="OptionButton" parent="TabContainer/Display"]
+layout_mode = 2
+item_count = 4
+selected = 0
+popup/item_0/text = "1280x720 (HD)"
+popup/item_0/id = 0
+popup/item_1/text = "1920x1080 (Full HD)"
+popup/item_1/id = 1
+popup/item_2/text = "2560x1440 (2K)"
+popup/item_2/id = 2
+popup/item_3/text = "3840x2160 (4K)"
+popup/item_3/id = 3
+
+[node name="Gameplay" type="VBoxContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="CameraShakeCheckBox" type="CheckBox" parent="TabContainer/Gameplay"]
+layout_mode = 2
+button_pressed = true
+text = "Camera Shake"
+
+[node name="ScreenFlashCheckBox" type="CheckBox" parent="TabContainer/Gameplay"]
+layout_mode = 2
+button_pressed = true
+text = "Screen Flash Effects"
+
+[node name="ShowTimerCheckBox" type="CheckBox" parent="TabContainer/Gameplay"]
+layout_mode = 2
+button_pressed = true
+text = "Show Level Timer"
+
+[node name="ShowFPSCheckBox" type="CheckBox" parent="TabContainer/Gameplay"]
+layout_mode = 2
+text = "Show FPS Counter"
+
+[node name="BottomButtons" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -100.0
+offset_right = 300.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="ApplyButton" type="Button" parent="BottomButtons"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "Apply"
+
+[node name="ResetButton" type="Button" parent="BottomButtons"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "Reset to Defaults"
+
+[node name="CloseButton" type="Button" parent="BottomButtons"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "Close"
