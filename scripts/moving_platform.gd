@@ -258,16 +258,18 @@ func get_movement_progress() -> float:
 
 
 # Editor visualization (only runs in editor)
-func _process(_delta: float) -> void:
-	if Engine.is_editor_hint() and show_movement_preview:
-		queue_redraw()
+# NOTE: Disabled because queue_redraw() doesn't exist for 3D nodes
+# TODO: Implement proper 3D editor visualization using RenderingServer or EditorPlugin
+#func _process(_delta: float) -> void:
+#	if Engine.is_editor_hint() and show_movement_preview:
+#		queue_redraw()
 
 
 # Draw movement preview in editor
-func _draw() -> void:
-	if not Engine.is_editor_hint() or not show_movement_preview:
-		return
-
-	# This would need RenderingServer calls for 3D visualization
-	# Or we could create a separate EditorPlugin for visual debugging
-	# For now, this is a placeholder for future editor integration
+# NOTE: Disabled - _draw() only works for 2D nodes (CanvasItem)
+# This would need RenderingServer calls for 3D visualization
+# Or we could create a separate EditorPlugin for visual debugging
+#func _draw() -> void:
+#	if not Engine.is_editor_hint() or not show_movement_preview:
+#		return
+#	# Placeholder for future editor integration
