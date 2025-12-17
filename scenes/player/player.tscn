@@ -9,9 +9,11 @@ height = 2.0
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_idle"]
 animation = &"Idle"
+loop_mode = 1
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_walk"]
 animation = &"Walk"
+loop_mode = 1
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jump"]
 animation = &"Jump"
@@ -117,9 +119,13 @@ active = true
 parameters/conditions/is_moving = false
 parameters/conditions/is_idle = false
 parameters/conditions/is_jumping = false
+parameters/conditions/is_falling = false
 parameters/conditions/has_landed = false
 parameters/conditions/is_punching = false
 parameters/conditions/is_waving = false
+parameters/conditions/is_dashing = false
+parameters/conditions/is_ground_pounding = false
+parameters/conditions/is_running = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

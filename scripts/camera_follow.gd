@@ -12,6 +12,11 @@ extends Node3D
 @export var follow_speed: float = GameConstants.DEFAULT_CAMERA_FOLLOW_SPEED  ## How quickly camera catches up to target (lower = smoother but slower)
 @export var collision_margin: float = GameConstants.DEFAULT_CAMERA_COLLISION_MARGIN  ## Safety distance from walls for SpringArm
 
+# Camera shake parameters
+@export_group("Camera Shake")
+@export var shake_decay: float = 5.0  ## How quickly shake diminishes (higher = faster decay)
+@export var max_shake_offset: float = 0.5  ## Maximum random offset during shake
+
 # Debug options
 @export_group("Debug")
 @export var enable_debug: bool = false  ## Enable debug visualization and console output
@@ -28,6 +33,10 @@ var _last_spring_length: float = 0.0
 var _collision_detected: bool = false
 var _debug_mesh: ImmediateMesh = null
 var _debug_mesh_instance: MeshInstance3D = null
+
+# Camera shake state
+var _shake_intensity: float = 0.0
+var _shake_offset: Vector3 = Vector3.ZERO
 
 
 func _ready() -> void:
@@ -64,9 +73,15 @@ func _process(delta: float) -> void:
 	if target == null:
 		return
 
+	# Update camera shake
+	_update_shake(delta)
+
 	# Position controller at the player
 	var target_position: Vector3 = target.global_position
 	global_position = global_position.lerp(target_position, follow_speed * delta)
+
+	# Apply shake offset
+	global_position += _shake_offset
 
 	# Make the camera controller face AWAY from the player (in the offset direction)
 	# This way when SpringArm extends backward, it points toward the offset
@@ -183,3 +198,29 @@ func _draw_crosshair(mesh: ImmediateMesh, pos: Vector3, color: Color, size: floa
 	# Z axis
 	mesh.surface_add_vertex(pos + Vector3(0, 0, -size))
 	mesh.surface_add_vertex(pos + Vector3(0, 0, size))
+
+
+## ========== CAMERA SHAKE SYSTEM ==========
+
+## Trigger camera shake with given intensity
+## @param intensity: Strength of the shake (0.0 to 1.0 typical range)
+## @param duration: How long the shake lasts (not used, decay is automatic)
+func shake(intensity: float, _duration: float = 0.0) -> void:
+	_shake_intensity = intensity
+
+
+## Update shake effect each frame
+func _update_shake(delta: float) -> void:
+	if _shake_intensity <= 0.0:
+		_shake_offset = Vector3.ZERO
+		return
+
+	# Generate random offset based on current intensity
+	_shake_offset = Vector3(
+		randf_range(-1.0, 1.0),
+		randf_range(-1.0, 1.0),
+		randf_range(-1.0, 1.0)
+	) * _shake_intensity * max_shake_offset
+
+	# Decay intensity over time
+	_shake_intensity = max(0.0, _shake_intensity - shake_decay * delta)
