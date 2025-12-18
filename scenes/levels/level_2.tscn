@@ -1,9 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://level_2"]
+[gd_scene load_steps=10 format=3 uid="uid://level_2"]
 
 [ext_resource type="PackedScene" uid="uid://dtqr7qwcbhqn4" path="res://scenes/player/player.tscn" id="1_f4xol"]
 [ext_resource type="Script" path="res://scripts/camera_follow.gd" id="2_db8qg"]
 [ext_resource type="PackedScene" uid="uid://btkb8m3w0lnor" path="res://scenes/collectibles/collectible.tscn" id="3_6e0wl"]
-[ext_resource type="PackedScene" uid="uid://c3eiqffjxu6qw" path="res://scenes/ui/game_ui.tscn" id="4_t5xbp"]
 [ext_resource type="PackedScene" uid="uid://58dujpts7581" path="res://assets/models/quaternius_platformer/platforms/Cube_Grass_Single.gltf" id="5_platform_grass"]
 [ext_resource type="PackedScene" uid="uid://rvt20iwpxutm" path="res://assets/models/quaternius_platformer/platforms/Cube_Dirt_Single.gltf" id="6_platform_dirt"]
 [ext_resource type="Script" path="res://scripts/collision_debugger.gd" id="7_debugger"]
@@ -178,7 +177,6 @@ margin = 0.3
 
 [node name="Camera3D" type="Camera3D" parent="CameraController/SpringArm3D"]
 
-[node name="GameUI" parent="." instance=ExtResource("4_t5xbp")]
 
 [node name="GameHUD" parent="." instance=ExtResource("8_hud")]
 

@@ -1,16 +1,21 @@
-[gd_scene load_steps=2 format=3 uid="uid://dcnej72km0cy7"]
+[gd_scene load_steps=2 format=3 uid="uid://dq9vh8wm4k2lp5"]
 
-[ext_resource type="Script" path="res://scripts/game_hud.gd" id="1_hud_script"]
+[ext_resource type="Script" path="res://scripts/game_hud.gd" id="1_v7g1w"]
 
 [node name="GameHUD" type="CanvasLayer"]
-script = ExtResource("1_hud_script")
+script = ExtResource("1_v7g1w")
 
 [node name="TopLeft" type="VBoxContainer" parent="."]
+anchors_preset = 5
 offset_left = 20.0
 offset_top = 20.0
 offset_right = 300.0
-offset_bottom = 180.0
-theme_override_constants/separation = 5
+offset_bottom = 200.0
+theme_override_constants/separation = 10
+
+[node name="HeartsContainer" type="HBoxContainer" parent="TopLeft"]
+layout_mode = 2
+theme_override_constants/separation = 4
 
 [node name="TimerLabel" type="Label" parent="TopLeft"]
 layout_mode = 2
@@ -36,16 +41,6 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 24
 text = "Score: 0"
 
-[node name="DeathCounterLabel" type="Label" parent="TopLeft"]
-visible = false
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 24
-text = "Deaths: 0"
-
 [node name="TopRight" type="VBoxContainer" parent="."]
 anchors_preset = 1
 anchor_left = 1.0
@@ -57,11 +52,19 @@ offset_bottom = 80.0
 grow_horizontal = 0
 
 [node name="FPSLabel" type="Label" parent="TopRight"]
-visible = false
 layout_mode = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 20
 text = "FPS: 60"
+horizontal_alignment = 2
+
+[node name="ComboLabel" type="Label" parent="TopRight"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "Combo: 2x (1.5x Coins)"
 horizontal_alignment = 2

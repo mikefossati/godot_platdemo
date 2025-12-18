@@ -1,7 +1,11 @@
+class_name Player
 extends CharacterBody3D
 
-## Enhanced Player Controller - Phase 1 Complete
+## Enhanced Player Controller - Phase 2: Health System Integrated
 ## Features: Acceleration, Coyote Time, Jump Buffering, Double Jump, Dash, Ground Pound
+
+# ========== COMPONENTS ==========
+@onready var health_component: HealthComponent = $HealthComponent
 
 # ========== MOVEMENT PARAMETERS ==========
 @export_group("Basic Movement")
@@ -76,6 +80,12 @@ var active_dash_trail: GPUParticles3D = null
 
 # ========== INITIALIZATION ==========
 func _ready() -> void:
+	# Connect to health component signals
+	if health_component:
+		health_component.died.connect(die)
+	else:
+		push_error("Player scene is missing a HealthComponent node!")
+
 	# Load ability unlocks from GameManager
 	if GameManager.has_method("is_ability_unlocked"):
 		double_jump_unlocked = GameManager.is_ability_unlocked("double_jump")
@@ -107,7 +117,8 @@ func _physics_process(delta: float) -> void:
 
 	# Check death boundary
 	if global_position.y < DEATH_Y:
-		die()
+		# Inflict max damage to trigger death via the health component
+		health_component.take_damage(health_component.max_health)
 
 
 # ========== NORMAL MOVEMENT ==========
@@ -304,6 +315,14 @@ func on_ground_pound_land() -> void:
 	spawn_ground_pound_particles()
 
 
+# ========== COMBAT FUNCTIONS ==========
+func bounce_on_enemy() -> void:
+	# This function will be called by an enemy when jumped on.
+	# It provides an upward bounce to the player.
+	# The combo logic will be handled by a separate combat manager.
+	velocity.y = jump_velocity * 0.8 # A slightly smaller bounce than a full jump
+
+
 # ========== UTILITY FUNCTIONS ==========
 func update_timers(delta: float) -> void:
 	# Coyote time: give grace period after leaving platform
@@ -414,6 +433,7 @@ func camera_shake(_duration: float, intensity: float) -> void:
 
 # ========== EXISTING FUNCTIONS (Keep Compatibility) ==========
 func die() -> void:
+	# This function is now called by the HealthComponent's 'died' signal
 	GameManager.trigger_game_over()
 
 

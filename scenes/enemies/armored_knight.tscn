@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=3 uid="uid://b1v2w3x4y506"]
+
+[ext_resource type="PackedScene" uid="uid://c2w0w1x0y0q1s" path="res://scenes/enemies/base_enemy.tscn" id="1_knight_base"]
+[ext_resource type="Script" path="res://scripts/enemies/armored_knight.gd" id="2_knight_script"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius_platformer/Enemies/Enemy.gltf" id="3_enemy_model"]
+
+[sub_resource type="StandardMaterial3D" id="KnightMaterial"]
+albedo_color = Color(0.3, 0.3, 0.6, 1)
+metallic = 0.9
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="KnightDamagedMaterial"]
+albedo_color = Color(0.7, 0.2, 0.2, 1)
+metallic = 0.7
+roughness = 0.4
+
+[node name="ArmoredKnight" instance=ExtResource("1_knight_base")]
+script = ExtResource("2_knight_script")
+damaged_material = SubResource("KnightDamagedMaterial")
+
+[node name="CharacterModel" parent="." index="4"]
+
+[node name="Enemy" parent="CharacterModel" instance=ExtResource("3_enemy_model")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, 0)
+
+[node name="Armature" parent="CharacterModel/Enemy" index="0"]
+
+[node name="Skeleton3D" parent="CharacterModel/Enemy/Armature" index="0"]
+
+[node name="Cube" parent="CharacterModel/Enemy/Armature/Skeleton3D" index="0"]
+surface_material_override/0 = SubResource("KnightMaterial")
+
+[editable path="CharacterModel/Enemy"]

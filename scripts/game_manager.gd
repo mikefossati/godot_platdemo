@@ -8,10 +8,23 @@ var score: int = 0
 var collectibles_gathered: int = 0
 var total_collectibles: int = 0
 
+# Combat combo state
+var _combo_count: int = 0
+var _combo_timer: float = 0.0
+var _coin_multiplier: float = 1.0
+const COMBO_TIMEOUT: float = 2.5
+
+# Ability unlocks
+var unlocked_abilities: Dictionary = {
+	"double_jump": false,
+	"ground_pound": false,
+	"air_dash": false
+}
+
 # Level progression state
 var current_level_index: int = 0
 var current_level_data: LevelData = null
-var unlocked_levels: Array[String] = ["level_1"]  # Array of unlocked level IDs
+var unlocked_levels: Array[String] = ["level_1", "level_6"]  # Array of unlocked level IDs
 
 # Cached player reference (reset on each level load)
 var cached_player: Node = null
@@ -31,6 +44,14 @@ signal collectible_gathered(current: int, total: int)
 signal game_over
 signal level_complete
 signal level_unlocked(level_id: String)
+signal combo_updated(combo_count: int, multiplier: float)
+
+
+func _process(delta: float) -> void:
+	if _combo_timer > 0:
+		_combo_timer -= delta
+		if _combo_timer <= 0:
+			_reset_combo()
 
 
 func _ready() -> void:
@@ -126,6 +147,22 @@ func _initialize_levels() -> void:
 	)
 	level_registry.append(level_5)
 
+	# Level 6 - Combat Showcase
+	var level_6 = LevelData.new(
+		"level_6",
+		"Combat Showcase",
+		"res://scenes/levels/level_combat_showcase.tscn",
+		5,
+		"Test your might against new foes.",
+		"level_5",
+		45.0,  # gold_time
+		60.0,  # silver_time
+		75.0,  # bronze_time
+		false, # require_all_collectibles
+		false  # require_perfect_run
+	)
+	level_registry.append(level_6)
+
 
 ## Resets the current session state (not progression)
 func reset_game() -> void:
@@ -133,10 +170,31 @@ func reset_game() -> void:
 	collectibles_gathered = 0
 	total_collectibles = 0
 	cached_player = null  # Invalidate player cache when resetting game
+	_reset_combo()
 
 
 ## Called when a collectible is picked up
 ## Increments the collectible counter and emits a signal
+func add_coins(amount: int) -> void:
+	var coins_to_add = int(amount * _coin_multiplier)
+	score += coins_to_add
+	score_changed.emit(score)
+
+
+func record_jump_kill() -> void:
+	_combo_count += 1
+	_combo_timer = COMBO_TIMEOUT
+	_coin_multiplier = 1.0 + (_combo_count * 0.5)
+	combo_updated.emit(_combo_count, _coin_multiplier)
+
+
+func _reset_combo() -> void:
+	_combo_count = 0
+	_combo_timer = 0.0
+	_coin_multiplier = 1.0
+	combo_updated.emit(_combo_count, _coin_multiplier)
+
+
 func collect_item(points: int = 10) -> void:
 	collectibles_gathered += 1
 	score += points
@@ -167,6 +225,7 @@ func load_scene(scene_path: String) -> void:
 
 ## Triggers game over state
 func trigger_game_over() -> void:
+	_reset_combo()
 	game_over.emit()
 	load_scene("res://scenes/ui/game_over.tscn")
 
@@ -325,6 +384,9 @@ func save_game() -> void:
 	# Save unlocked levels
 	save_file.set_value("progression", "unlocked_levels", unlocked_levels)
 
+	# Save ability unlocks
+	save_file.set_value("progression", "unlocked_abilities", unlocked_abilities)
+
 	# Save level stats
 	save_file.set_value("stats", "level_stats", level_stats)
 
@@ -367,12 +429,19 @@ func load_game() -> void:
 			return
 
 	# Load unlocked levels with validation
-	var loaded_levels = save_file.get_value("progression", "unlocked_levels", ["level_1"])
+	var default_unlocked = ["level_1", "level_6"]
+	var loaded_levels = save_file.get_value("progression", "unlocked_levels", default_unlocked)
 	if _validate_unlocked_levels(loaded_levels):
-		unlocked_levels = loaded_levels
+		# Merge loaded levels with default test levels to ensure they are always available
+		var combined_levels = loaded_levels + default_unlocked
+		var unique_levels: Array[String] = []
+		for level in combined_levels:
+			if not level in unique_levels:
+				unique_levels.append(level)
+		unlocked_levels = unique_levels
 	else:
 		push_warning("Invalid unlocked_levels data, using defaults")
-		unlocked_levels = ["level_1"]
+		unlocked_levels = default_unlocked
 
 	# Load level stats with validation
 	var loaded_stats = save_file.get_value("stats", "level_stats", {})
@@ -382,12 +451,22 @@ func load_game() -> void:
 		push_warning("Invalid level_stats data, using defaults")
 		level_stats = {}
 
+	# Load ability unlocks
+	var loaded_abilities = save_file.get_value("progression", "unlocked_abilities", {})
+	if loaded_abilities is Dictionary:
+		# Merge loaded abilities with defaults (in case new abilities were added)
+		for ability in unlocked_abilities.keys():
+			if loaded_abilities.has(ability):
+				unlocked_abilities[ability] = loaded_abilities[ability]
+	else:
+		push_warning("Invalid unlocked_abilities data, using defaults")
+
 	print("Game loaded successfully from: %s" % SAVE_PATH)
 
 
 ## Use default save data
 func _use_default_save_data() -> void:
-	unlocked_levels = ["level_1"]
+	unlocked_levels = ["level_1", "level_6"]
 	level_stats = {}
 
 
@@ -485,6 +564,48 @@ func _validate_level_stats(data: Variant) -> bool:
 		# No validation failure if missing - backward compatibility
 
 	return true
+
+
+## Check if an ability is unlocked
+func is_ability_unlocked(ability_name: String) -> bool:
+	if unlocked_abilities.has(ability_name):
+		return unlocked_abilities[ability_name]
+	push_warning("Unknown ability: %s" % ability_name)
+	return false
+
+
+## Unlock an ability
+func unlock_ability(ability_name: String) -> void:
+	if unlocked_abilities.has(ability_name):
+		unlocked_abilities[ability_name] = true
+		print("Ability unlocked: %s" % ability_name)
+		save_game()
+
+		# Notify the player to update their abilities
+		var player = _find_player()
+		if player:
+			match ability_name:
+				"double_jump":
+					if player.has_method("unlock_double_jump"):
+						player.unlock_double_jump()
+				"ground_pound":
+					if player.has_method("unlock_ground_pound"):
+						player.unlock_ground_pound()
+				"air_dash":
+					if player.has_method("unlock_air_dash"):
+						player.unlock_air_dash()
+	else:
+		push_warning("Unknown ability: %s" % ability_name)
+
+
+## Purchase an ability from the shop (placeholder for Phase 3)
+func purchase_ability(ability_name: String, cost: int) -> bool:
+	if score >= cost:
+		score -= cost
+		unlock_ability(ability_name)
+		score_changed.emit(score)
+		return true
+	return false
 
 
 ## Find the player node in the current scene (with caching for performance)

@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://dnm1w0a1s1v2q"]
+
+[ext_resource type="PackedScene" uid="uid://c2w0w1x0y0q1s" path="res://scenes/enemies/base_enemy.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/enemies/goblin.gd" id="2_goblin_script"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius_platformer/Enemies/Enemy.gltf" id="3_enemy_model"]
+
+[sub_resource type="StandardMaterial3D" id="GoblinMaterial"]
+albedo_color = Color(0.2, 0.8, 0.2, 1)
+
+[node name="Goblin" instance=ExtResource("1_base")]
+script = ExtResource("2_goblin_script")
+
+[node name="CharacterModel" parent="." index="4"]
+
+[node name="Enemy" parent="CharacterModel" instance=ExtResource("3_enemy_model")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Armature" parent="CharacterModel/Enemy" index="0"]
+
+[node name="Skeleton3D" parent="CharacterModel/Enemy/Armature" index="0"]
+
+[node name="Cube" parent="CharacterModel/Enemy/Armature/Skeleton3D" index="0"]
+surface_material_override/0 = SubResource("GoblinMaterial")
+
+[editable path="CharacterModel/Enemy"]
