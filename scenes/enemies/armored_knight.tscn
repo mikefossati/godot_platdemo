@@ -16,12 +16,18 @@ roughness = 0.4
 
 [node name="ArmoredKnight" instance=ExtResource("1_knight_base")]
 script = ExtResource("2_knight_script")
+move_speed = 1.5
+coins_dropped = 5
+detection_range = 4.0
 damaged_material = SubResource("KnightDamagedMaterial")
+
+[node name="HealthComponent" parent="." index="1"]
+max_health = 2
 
 [node name="CharacterModel" parent="." index="4"]
 
 [node name="Enemy" parent="CharacterModel" instance=ExtResource("3_enemy_model")]
-transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, 0)
+transform = Transform3D(-1.2, 0, 0, 0, 1.2, 0, 0, 0, -1.2, 0, 0, 0)
 
 [node name="Armature" parent="CharacterModel/Enemy" index="0"]
 

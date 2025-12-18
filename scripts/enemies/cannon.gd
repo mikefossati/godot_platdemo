@@ -1,3 +1,4 @@
+class_name Cannon
 extends Node3D
 
 ## Cannon - A stationary turret that fires projectiles at the player.
@@ -20,7 +21,7 @@ func _ready() -> void:
 	var detection_shape = detection_area.get_child(0) as CollisionShape3D
 	if detection_shape and detection_shape.shape is SphereShape3D:
 		detection_shape.shape.radius = detection_range
-	
+
 	# Connect signals
 	detection_area.body_entered.connect(_on_player_entered)
 	detection_area.body_exited.connect(_on_player_exited)
@@ -41,14 +42,14 @@ func _process(delta: float) -> void:
 			fire_timer = fire_rate
 
 func fire_cannonball() -> void:
-	if not CANNONBALL_SCENE:
-		push_error("Cannonball scene not loaded!")
-		return
+	# Get projectile from pool (now configured as autoload)
+	var ball = ProjectilePool.get_object() as Area3D
 
-	var ball = CANNONBALL_SCENE.instantiate() as Area3D
-	get_tree().root.add_child(ball)
 	ball.global_position = cannon_barrel.global_position
 	ball.direction = -cannon_barrel.global_transform.basis.z
+
+	# Store reference for debugging
+	ball.set_meta("shooter", self)
 
 func _on_player_entered(body: Node3D) -> void:
 	if body is Player:

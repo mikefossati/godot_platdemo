@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://projectile_pool_autoload"]
+
+[ext_resource type="Script" path="res://scripts/utils/object_pool.gd" id="1_pool_script"]
+[ext_resource type="PackedScene" uid="uid://cannonball_scene" path="res://scenes/projectiles/cannonball.tscn" id="2_cannonball_scene"]
+
+[node name="ProjectilePool" type="Node"]
+script = ExtResource("1_pool_script")
+pool_size = 50
+scene_to_pool = ExtResource("2_cannonball_scene")

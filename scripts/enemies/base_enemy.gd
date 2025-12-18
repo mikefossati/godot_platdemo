@@ -5,10 +5,10 @@ extends CharacterBody3D
 ## Includes health, basic AI state, and player interaction.
 
 # ========== COMPONENTS ==========
-@onready var health_component: HealthComponent = $HealthComponent
-@onready var detection_area: Area3D = $DetectionArea
-@onready var hurtbox: Area3D = $Hurtbox
-@onready var animation_player: AnimationPlayer = $CharacterModel/AnimationPlayer
+@onready var health_component: HealthComponent = SceneValidator.validate_node_path(self, "HealthComponent")
+@onready var detection_area: Area3D = SceneValidator.validate_node_path(self, "DetectionArea")
+@onready var hurtbox: Area3D = SceneValidator.validate_node_path(self, "Hurtbox")
+@onready var animation_player: AnimationPlayer = SceneValidator.validate_node_path(self, "CharacterModel/AnimationPlayer")
 
 # ========== EXPORTED PARAMETERS ==========
 @export_group("AI Settings")
@@ -72,7 +72,7 @@ func _state_idle(_delta: float) -> void:
 	# Default idle behavior: do nothing
 	velocity.x = 0
 	velocity.z = 0
-	if animation_player.has_animation("Idle"):
+	if animation_player and animation_player.has_animation("Idle"):
 		animation_player.play("Idle")
 
 func _state_patrol(delta: float) -> void:
@@ -132,21 +132,46 @@ func _on_player_exited(body: Node3D) -> void:
 func _on_hurtbox_entered(body: Node3D) -> void:
 	if body is Player:
 		var player = body as Player
-		# Check if player is jumping on top of the enemy
-		if player.global_position.y > hurtbox.global_position.y + 0.2 and player.velocity.y < 0:
+		# Check if player is jumping on top of the enemy (jumping DOWN onto the enemy)
+		# Player needs to be above the enemy's center and falling downward
+		var player_bottom = player.global_position.y
+		var enemy_center = global_position.y
+
+		# For jump attacks, player must be above enemy center and falling
+		if player_bottom > enemy_center and player.velocity.y < 0:
+			# Player successfully jumped on enemy
 			take_jump_damage(player)
 		else:
+			# Player touched enemy from side or below
 			damage_player(player)
 
 func _on_died() -> void:
 	# Spawn coins, play death animation, and disappear
 	if GameManager:
 		GameManager.add_coins(coins_dropped)
-	
+
+	# Disable physics and collisions immediately
 	set_physics_process(false)
+	collision_layer = 0
+	collision_mask = 0
+
+	# Disconnect signals to prevent errors during death
+	if hurtbox and hurtbox.body_entered.is_connected(_on_hurtbox_entered):
+		hurtbox.body_entered.disconnect(_on_hurtbox_entered)
+	if detection_area and detection_area.body_entered.is_connected(_on_player_detected):
+		detection_area.body_entered.disconnect(_on_player_detected)
+
+	# Shrink the model (not the enemy itself to avoid basis issues)
 	var tween = create_tween()
-	tween.tween_property(self, "modulate", Color(1,1,1,0), 0.5)
-	tween.tween_callback(queue_free)
+	tween.set_parallel(true)
+
+	# Scale down the CharacterModel instead of the CharacterBody3D
+	if has_node("CharacterModel"):
+		var model = get_node("CharacterModel")
+		tween.tween_property(model, "scale", Vector3.ZERO, 0.5)
+		tween.tween_property(model, "position", model.position + Vector3(0, -2, 0), 0.5)
+
+	tween.chain().tween_callback(queue_free)
 
 
 # ========== ENEMY SEPARATION ==========

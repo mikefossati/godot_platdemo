@@ -9,11 +9,17 @@ albedo_color = Color(0.2, 0.8, 0.2, 1)
 
 [node name="Goblin" instance=ExtResource("1_base")]
 script = ExtResource("2_goblin_script")
+move_speed = 2.0
+coins_dropped = 3
+detection_range = 5.0
+
+[node name="HealthComponent" parent="." index="1"]
+max_health = 1
 
 [node name="CharacterModel" parent="." index="4"]
 
 [node name="Enemy" parent="CharacterModel" instance=ExtResource("3_enemy_model")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)
 
 [node name="Armature" parent="CharacterModel/Enemy" index="0"]
 

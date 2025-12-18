@@ -9,6 +9,12 @@ albedo_color = Color(0.5, 0.2, 0.8, 1)
 
 [node name="Bat" instance=ExtResource("1_bat_base")]
 script = ExtResource("2_bat_script")
+move_speed = 2.5
+coins_dropped = 3
+detection_range = 6.0
+
+[node name="HealthComponent" parent="." index="1"]
+max_health = 1
 
 [node name="SwoopDetector" type="RayCast3D" parent="." index="5"]
 target_position = Vector3(0, -8, 0)
@@ -20,7 +26,7 @@ enabled = true
 [node name="AnimationPlayer" type="AnimationPlayer" parent="CharacterModel" index="0"]
 
 [node name="Bee" parent="CharacterModel" instance=ExtResource("3_bee_model")]
-transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
+transform = Transform3D(-0.8, 0, 0, 0, 0.8, 0, 0, 0, -0.8, 0, 0, 0)
 
 [node name="Armature" parent="CharacterModel/Bee" index="0"]
 

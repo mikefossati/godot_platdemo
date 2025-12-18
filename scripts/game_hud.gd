@@ -4,12 +4,12 @@ extends CanvasLayer
 ## Shows timer, collectibles, score, and FPS based on settings
 
 # UI References
-@onready var timer_label: Label = $TopLeft/TimerLabel
-@onready var collectibles_label: Label = $TopLeft/CollectiblesLabel
-@onready var score_label: Label = $TopLeft/ScoreLabel
-@onready var fps_label: Label = $TopRight/FPSLabel
-@onready var combo_label: Label = $TopRight/ComboLabel
-@onready var hearts_container: HBoxContainer = $TopLeft/HeartsContainer
+@onready var timer_label: Label = SceneValidator.validate_node_path(self, "TopLeft/TimerLabel")
+@onready var collectibles_label: Label = SceneValidator.validate_node_path(self, "TopLeft/CollectiblesLabel")
+@onready var score_label: Label = SceneValidator.validate_node_path(self, "TopLeft/ScoreLabel")
+@onready var fps_label: Label = SceneValidator.validate_node_path(self, "TopRight/FPSLabel")
+@onready var combo_label: Label = SceneValidator.validate_node_path(self, "TopRight/ComboLabel")
+@onready var hearts_container: HBoxContainer = SceneValidator.validate_node_path(self, "TopLeft/HeartsContainer")
 
 # Heart textures
 const HEART_FULL = preload("res://assets/ui/heart_full.svg")

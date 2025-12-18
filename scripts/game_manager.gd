@@ -26,9 +26,6 @@ var current_level_index: int = 0
 var current_level_data: LevelData = null
 var unlocked_levels: Array[String] = ["level_1", "level_6"]  # Array of unlocked level IDs
 
-# Cached player reference (reset on each level load)
-var cached_player: Node = null
-
 # Level registry - all available levels
 var level_registry: Array[LevelData] = []
 
@@ -169,7 +166,6 @@ func reset_game() -> void:
 	score = 0
 	collectibles_gathered = 0
 	total_collectibles = 0
-	cached_player = null  # Invalidate player cache when resetting game
 	_reset_combo()
 
 
@@ -218,8 +214,12 @@ func set_total_collectibles(total: int) -> void:
 	total_collectibles = total
 
 
-## Loads a scene by path
+## Load a scene by path
 func load_scene(scene_path: String) -> void:
+	# Validate scene exists before loading
+	if not SafeResourceLoader.load_scene(scene_path):
+		push_error("Cannot load scene - file not found or invalid: %s" % scene_path)
+		return
 	get_tree().call_deferred("change_scene_to_file", scene_path)
 
 
@@ -610,16 +610,5 @@ func purchase_ability(ability_name: String, cost: int) -> bool:
 
 ## Find the player node in the current scene (with caching for performance)
 func _find_player() -> Node:
-	# Return cached player if still valid
-	if cached_player != null and is_instance_valid(cached_player):
-		return cached_player
-
-	# Cache miss - search for player in scene tree
-	var players = get_tree().get_nodes_in_group("player")
-	if players.size() > 0:
-		cached_player = players[0]
-		return cached_player
-
-	# No player found
-	cached_player = null
-	return null
+	# Use NodeCache for optimized lookup (now configured as autoload)
+	return NodeCache.get_player()

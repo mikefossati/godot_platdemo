@@ -21,6 +21,8 @@ GameConstants="*res://scripts/game_constants.gd"
 SettingsManager="*res://scripts/settings_manager.gd"
 GameManager="*res://scripts/game_manager.gd"
 LevelSession="*res://scripts/level_session.gd"
+NodeCache="*res://scenes/utils/node_cache.tscn"
+ProjectilePool="*res://scenes/pools/projectile_pool.tscn"
 
 [display]
 

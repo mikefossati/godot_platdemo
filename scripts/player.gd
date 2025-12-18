@@ -5,7 +5,7 @@ extends CharacterBody3D
 ## Features: Acceleration, Coyote Time, Jump Buffering, Double Jump, Dash, Ground Pound
 
 # ========== COMPONENTS ==========
-@onready var health_component: HealthComponent = $HealthComponent
+@onready var health_component: HealthComponent = SceneValidator.validate_node_path(self, "HealthComponent")
 
 # ========== MOVEMENT PARAMETERS ==========
 @export_group("Basic Movement")
