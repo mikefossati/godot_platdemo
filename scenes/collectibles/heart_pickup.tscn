@@ -1,0 +1,36 @@
+[gd_scene load_steps=4 format=3 uid="uid://dh3vy8n2m5pxt"]
+
+[ext_resource type="Script" path="res://scripts/collectibles/heart_pickup.gd" id="1_heart"]
+[ext_resource type="PackedScene" uid="uid://c3qppfpq8g6wd" path="res://assets/models/quaternius_platformer/Powerups and Pickups/Heart.gltf" id="2_heart_model"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_heart"]
+radius = 0.6
+
+[node name="HeartPickup" type="Area3D"]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_heart")
+
+[node name="HeartModel" parent="." instance=ExtResource("2_heart_model")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_heart")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+light_color = Color(1, 0.3, 0.3, 1)
+light_energy = 1.5
+omni_range = 3.0
+
+[node name="GlowParticles" type="GPUParticles3D" parent="."]
+amount = 8
+lifetime = 1.5
+visibility_aabb = AABB(-2, -2, -2, 4, 4, 4)
+
+[node name="CollectParticles" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 16
+lifetime = 0.8
+one_shot = true
+explosiveness = 0.8
+visibility_aabb = AABB(-2, -2, -2, 4, 4, 4)

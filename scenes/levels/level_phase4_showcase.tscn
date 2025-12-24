@@ -1,0 +1,388 @@
+[gd_scene load_steps=24 format=3 uid="uid://cj8vy4showcase_p4"]
+
+[ext_resource type="PackedScene" uid="uid://dtqr7qwcbhqn4" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="Script" uid="uid://c6kv2jcr3yytn" path="res://scripts/camera_follow.gd" id="2_camera"]
+[ext_resource type="PackedScene" uid="uid://58dujpts7581" path="res://assets/models/quaternius_platformer/platforms/Cube_Grass_Single.gltf" id="3_platform_grass"]
+[ext_resource type="PackedScene" uid="uid://rvt20iwpxutm" path="res://assets/models/quaternius_platformer/platforms/Cube_Dirt_Single.gltf" id="4_platform_dirt"]
+[ext_resource type="PackedScene" uid="uid://dq9vh8wm4k2lp5" path="res://scenes/ui/game_hud.tscn" id="5_hud"]
+[ext_resource type="PackedScene" uid="uid://cpq4vh7wm3k9lp" path="res://scenes/ui/pause_menu.tscn" id="6_pause"]
+
+[ext_resource type="PackedScene" uid="uid://c8vqy3m4n2pxr" path="res://scenes/collectibles/coin.tscn" id="7_coin"]
+[ext_resource type="PackedScene" uid="uid://bq8xy4n3m1pxs" path="res://scenes/collectibles/crown_crystal.tscn" id="8_crystal"]
+[ext_resource type="PackedScene" uid="uid://c4vry2k8p3nxm" path="res://scenes/collectibles/treasure_chest.tscn" id="9_chest"]
+[ext_resource type="PackedScene" uid="uid://dh3vy8n2m5pxt" path="res://scenes/collectibles/heart_pickup.tscn" id="10_heart"]
+
+[ext_resource type="PackedScene" uid="uid://bg7vy2n8p4qxs" path="res://scenes/enemies/goblin.tscn" id="11_goblin"]
+[ext_resource type="PackedScene" uid="uid://ch8wy3n9q5rxt" path="res://scenes/enemies/armored_knight.tscn" id="12_knight"]
+[ext_resource type="PackedScene" uid="uid://dk9vh3wm2k8lq4" path="res://scenes/hazards/spike.tscn" id="13_spike"]
+
+[ext_resource type="Script" path="res://scripts/checkpoint.gd" id="14_checkpoint"]
+[ext_resource type="Script" path="res://scripts/tutorial_sign.gd" id="15_tutorial_sign"]
+
+[sub_resource type="Environment" id="Environment_phase4"]
+background_mode = 1
+background_color = Color(0.4, 0.6, 0.9, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.9, 0.95, 1, 1)
+ambient_light_energy = 0.9
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.5
+glow_strength = 1.1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(60, 1, 40)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_platform"]
+size = Vector3(4.5, 1, 4.5)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_checkpoint"]
+radius = 1.5
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_checkpoint"]
+top_radius = 0.5
+bottom_radius = 0.5
+height = 2.0
+
+[sub_resource type="StandardMaterial3D" id="Material_checkpoint"]
+albedo_color = Color(0.5, 0.5, 0.5, 1)
+emission_enabled = true
+emission = Color(0.3, 0.3, 0.3, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_sign"]
+radius = 3.0
+
+[node name="Level_Phase4_Showcase" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_phase4")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 12, 0)
+light_color = Color(1, 0.98, 0.9, 1)
+light_energy = 1.3
+shadow_enabled = true
+shadow_bias = 0.05
+shadow_opacity = 0.7
+
+[node name="Player" parent="." groups=["player"] instance=ExtResource("1_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="CameraController" type="Node3D" parent="." groups=["camera"]]
+script = ExtResource("2_camera")
+enable_debug = false
+debug_console_output = false
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraController"]
+spring_length = 10.0
+margin = 0.3
+
+[node name="Camera3D" type="Camera3D" parent="CameraController/SpringArm3D"]
+current = true
+fov = 60.0
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="GameHUD" parent="UI" instance=ExtResource("5_hud")]
+
+[node name="PauseMenu" parent="UI" instance=ExtResource("6_pause")]
+visible = false
+
+[node name="Ground" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="GroundMesh" parent="Ground" instance=ExtResource("4_platform_dirt")]
+transform = Transform3D(12, 0, 0, 0, 0.5, 0, 0, 0, 8, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_ground")
+
+[node name="Section_TutorialSigns" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 0)
+
+[node name="Label" type="Label3D" parent="Section_TutorialSigns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+text = "TUTORIAL SIGNS SECTION
+Press E or walk close to read"
+font_size = 28
+
+[node name="Platform1" type="StaticBody3D" parent="Section_TutorialSigns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Mesh" parent="Section_TutorialSigns/Platform1" instance=ExtResource("3_platform_grass")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Section_TutorialSigns/Platform1"]
+shape = SubResource("BoxShape3D_platform")
+
+[node name="TutorialSign_Welcome" type="Node3D" parent="Section_TutorialSigns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("15_tutorial_sign")
+message_text = "Welcome to Phase 4!
+
+Use WASD to move
+Space to jump
+Shift to run"
+auto_show = true
+show_duration = 6.0
+
+[node name="DetectionArea" type="Area3D" parent="Section_TutorialSigns/TutorialSign_Welcome"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Section_TutorialSigns/TutorialSign_Welcome/DetectionArea"]
+shape = SubResource("SphereShape3D_sign")
+
+[node name="SignPost" type="MeshInstance3D" parent="Section_TutorialSigns/TutorialSign_Welcome"]
+transform = Transform3D(0.2, 0, 0, 0, 1, 0, 0, 0, 0.2, 0, 0.5, 0)
+mesh = SubResource("CylinderMesh_checkpoint")
+
+[node name="SignLabel" type="Label3D" parent="Section_TutorialSigns/TutorialSign_Welcome"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+billboard = 1
+text = "Welcome!"
+font_size = 32
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 1)
+
+[node name="PromptLabel" type="Label3D" parent="Section_TutorialSigns/TutorialSign_Welcome"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+billboard = 1
+text = "Press E to read"
+font_size = 20
+
+[node name="TutorialSign_Abilities" type="Node3D" parent="Section_TutorialSigns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, 0)
+script = ExtResource("15_tutorial_sign")
+message_text = "Advanced Abilities:
+
+Double Jump - Press Space twice
+Air Dash - Q while in air
+Ground Pound - Hold Space in air"
+auto_show = false
+show_duration = 8.0
+
+[node name="DetectionArea" type="Area3D" parent="Section_TutorialSigns/TutorialSign_Abilities"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Section_TutorialSigns/TutorialSign_Abilities/DetectionArea"]
+shape = SubResource("SphereShape3D_sign")
+
+[node name="SignPost" type="MeshInstance3D" parent="Section_TutorialSigns/TutorialSign_Abilities"]
+transform = Transform3D(0.2, 0, 0, 0, 1, 0, 0, 0, 0.2, 0, 0.5, 0)
+mesh = SubResource("CylinderMesh_checkpoint")
+
+[node name="SignLabel" type="Label3D" parent="Section_TutorialSigns/TutorialSign_Abilities"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+billboard = 1
+font_size = 32
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 1)
+
+[node name="PromptLabel" type="Label3D" parent="Section_TutorialSigns/TutorialSign_Abilities"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+billboard = 1
+text = "Press E to read"
+font_size = 20
+
+[node name="Section_Checkpoints" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 0)
+
+[node name="Label" type="Label3D" parent="Section_Checkpoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+text = "CHECKPOINT SECTION
+Walk through to save progress"
+font_size = 28
+
+[node name="Platform1" type="StaticBody3D" parent="Section_Checkpoints"]
+
+[node name="Mesh" parent="Section_Checkpoints/Platform1" instance=ExtResource("3_platform_grass")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Section_Checkpoints/Platform1"]
+shape = SubResource("BoxShape3D_platform")
+
+[node name="Checkpoint_1" type="Area3D" parent="Section_Checkpoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+script = ExtResource("14_checkpoint")
+checkpoint_id = 1
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Section_Checkpoints/Checkpoint_1"]
+shape = SubResource("SphereShape3D_checkpoint")
+
+[node name="Mesh" type="MeshInstance3D" parent="Section_Checkpoints/Checkpoint_1"]
+mesh = SubResource("CylinderMesh_checkpoint")
+surface_material_override/0 = SubResource("Material_checkpoint")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Section_Checkpoints/Checkpoint_1"]
+light_color = Color(0.5, 0.5, 0.5, 1)
+light_energy = 0.5
+omni_range = 5.0
+
+[node name="ActivationParticles" type="GPUParticles3D" parent="Section_Checkpoints/Checkpoint_1"]
+emitting = false
+amount = 20
+lifetime = 1.0
+one_shot = true
+explosiveness = 0.8
+
+[node name="Section_EnemyIntegration" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Label" type="Label3D" parent="Section_EnemyIntegration"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+text = "ENEMY + COLLECTIBLES
+Jump on enemies for coins!"
+font_size = 28
+
+[node name="Platform1" type="StaticBody3D" parent="Section_EnemyIntegration"]
+
+[node name="Mesh" parent="Section_EnemyIntegration/Platform1" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(1.5, 0, 0, 0, 1, 0, 0, 0, 1.5, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Section_EnemyIntegration/Platform1"]
+shape = SubResource("BoxShape3D_platform")
+
+[node name="Goblin1" parent="Section_EnemyIntegration" instance=ExtResource("11_goblin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, 0)
+
+[node name="Goblin2" parent="Section_EnemyIntegration" instance=ExtResource("11_goblin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 0)
+
+[node name="Crystal1" parent="Section_EnemyIntegration" instance=ExtResource("8_crystal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+crystal_id = 0
+
+[node name="HeartPickup" parent="Section_EnemyIntegration" instance=ExtResource("10_heart")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 2, 0)
+
+[node name="TutorialSign_Combat" type="Node3D" parent="Section_EnemyIntegration"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 0)
+script = ExtResource("15_tutorial_sign")
+message_text = "Jump on enemies to defeat them!
+Enemies drop coins when defeated.
+Collect hearts to heal damage."
+auto_show = true
+show_duration = 6.0
+
+[node name="DetectionArea" type="Area3D" parent="Section_EnemyIntegration/TutorialSign_Combat"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Section_EnemyIntegration/TutorialSign_Combat/DetectionArea"]
+shape = SubResource("SphereShape3D_sign")
+
+[node name="SignPost" type="MeshInstance3D" parent="Section_EnemyIntegration/TutorialSign_Combat"]
+transform = Transform3D(0.2, 0, 0, 0, 1, 0, 0, 0, 0.2, 0, 0.5, 0)
+mesh = SubResource("CylinderMesh_checkpoint")
+
+[node name="SignLabel" type="Label3D" parent="Section_EnemyIntegration/TutorialSign_Combat"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+billboard = 1
+font_size = 32
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 1)
+
+[node name="PromptLabel" type="Label3D" parent="Section_EnemyIntegration/TutorialSign_Combat"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+billboard = 1
+font_size = 20
+
+[node name="Section_AdvancedChallenge" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
+
+[node name="Label" type="Label3D" parent="Section_AdvancedChallenge"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+text = "ADVANCED CHALLENGE
+Enemies + Hazards + Collectibles"
+font_size = 28
+
+[node name="Platform1" type="StaticBody3D" parent="Section_AdvancedChallenge"]
+
+[node name="Mesh" parent="Section_AdvancedChallenge/Platform1" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Section_AdvancedChallenge/Platform1"]
+shape = SubResource("BoxShape3D_platform")
+
+[node name="Knight" parent="Section_AdvancedChallenge" instance=ExtResource("12_knight")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Spike1" parent="Section_AdvancedChallenge" instance=ExtResource("13_spike")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.1, 0)
+
+[node name="Spike2" parent="Section_AdvancedChallenge" instance=ExtResource("13_spike")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.1, 0)
+
+[node name="TreasureChest" parent="Section_AdvancedChallenge" instance=ExtResource("9_chest")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3)
+chest_id = "phase4_chest_1"
+coin_value = 15
+
+[node name="Checkpoint_2" type="Area3D" parent="Section_AdvancedChallenge"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.5, 0)
+script = ExtResource("14_checkpoint")
+checkpoint_id = 2
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Section_AdvancedChallenge/Checkpoint_2"]
+shape = SubResource("SphereShape3D_checkpoint")
+
+[node name="Mesh" type="MeshInstance3D" parent="Section_AdvancedChallenge/Checkpoint_2"]
+mesh = SubResource("CylinderMesh_checkpoint")
+surface_material_override/0 = SubResource("Material_checkpoint")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Section_AdvancedChallenge/Checkpoint_2"]
+light_color = Color(0.5, 0.5, 0.5, 1)
+light_energy = 0.5
+omni_range = 5.0
+
+[node name="ActivationParticles" type="GPUParticles3D" parent="Section_AdvancedChallenge/Checkpoint_2"]
+emitting = false
+amount = 20
+lifetime = 1.0
+one_shot = true
+explosiveness = 0.8
+
+[node name="Crystal2" parent="Section_AdvancedChallenge" instance=ExtResource("8_crystal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+crystal_id = 1
+
+[node name="Section_GoalArea" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0)
+
+[node name="Label" type="Label3D" parent="Section_GoalArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+text = "GOAL AREA
+Collect all crystals to complete!"
+font_size = 28
+
+[node name="Platform1" type="StaticBody3D" parent="Section_GoalArea"]
+
+[node name="Mesh" parent="Section_GoalArea/Platform1" instance=ExtResource("3_platform_grass")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Section_GoalArea/Platform1"]
+shape = SubResource("BoxShape3D_platform")
+
+[node name="Crystal3" parent="Section_GoalArea" instance=ExtResource("8_crystal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+crystal_id = 2
+
+[node name="Coins_Reward" type="Node3D" parent="Section_GoalArea"]
+
+[node name="Coin1" parent="Section_GoalArea/Coins_Reward" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 0)
+
+[node name="Coin2" parent="Section_GoalArea/Coins_Reward" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2, 0)
+
+[node name="Coin3" parent="Section_GoalArea/Coins_Reward" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="Coin4" parent="Section_GoalArea/Coins_Reward" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2, 0)
+
+[node name="Coin5" parent="Section_GoalArea/Coins_Reward" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, 0)

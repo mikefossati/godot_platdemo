@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://cll5qoi4jb5ma"]
+
+[ext_resource type="Script" path="res://scripts/hazards/crumbling_platform.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://58dujpts7581" path="res://assets/models/quaternius_platformer/platforms/Cube_Grass_Single.gltf" id="2_platform"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_collision"]
+size = Vector3(4.5, 1, 4.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_detection"]
+size = Vector3(4.5, 1.5, 4.5)
+
+[node name="CrumblingPlatform" type="StaticBody3D"]
+script = ExtResource("1_script")
+shake_delay = 0.5
+fall_delay = 1.0
+respawn_delay = 3.0
+warning_color = Color(0.6, 0.4, 0.2, 1)
+shake_intensity = 0.05
+
+[node name="Mesh" parent="." instance=ExtResource("2_platform")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_collision")
+
+[node name="DetectionArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+shape = SubResource("BoxShape3D_detection")
+
+[node name="WarningParticles" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+emitting = false
+amount = 8
+lifetime = 0.5
+visibility_aabb = AABB(-2, -1, -2, 4, 2, 4)

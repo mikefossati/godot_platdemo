@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://c8vqy3m4n2pxr"]
+
+[ext_resource type="Script" path="res://scripts/collectibles/coin.gd" id="1_coin"]
+[ext_resource type="PackedScene" uid="uid://d07hbwpnfnjf3" path="res://assets/models/quaternius_platformer/Powerups and Pickups/Coin.gltf" id="2_coin_model"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_coin"]
+radius = 0.5
+
+[node name="Coin" type="Area3D"]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_coin")
+
+[node name="CoinModel" parent="." instance=ExtResource("2_coin_model")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_coin")
+
+[node name="CollectParticles" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 8
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.8
+randomness = 0.5
+visibility_aabb = AABB(-1, -1, -1, 2, 2, 2)
+process_material = null
+draw_pass_1 = null

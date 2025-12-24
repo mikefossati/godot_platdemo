@@ -1,0 +1,427 @@
+[gd_scene load_steps=18 format=3 uid="uid://bp9xy3k4n8showcase"]
+
+[ext_resource type="PackedScene" uid="uid://dtqr7qwcbhqn4" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="Script" uid="uid://c6kv2jcr3yytn" path="res://scripts/camera_follow.gd" id="2_camera"]
+[ext_resource type="PackedScene" uid="uid://58dujpts7581" path="res://assets/models/quaternius_platformer/platforms/Cube_Grass_Single.gltf" id="3_platform_grass"]
+[ext_resource type="PackedScene" uid="uid://rvt20iwpxutm" path="res://assets/models/quaternius_platformer/platforms/Cube_Dirt_Single.gltf" id="4_platform_dirt"]
+[ext_resource type="PackedScene" uid="uid://dq9vh8wm4k2lp5" path="res://scenes/ui/game_hud.tscn" id="5_hud"]
+[ext_resource type="PackedScene" uid="uid://cpq4vh7wm3k9lp" path="res://scenes/ui/pause_menu.tscn" id="6_pause"]
+
+[ext_resource type="PackedScene" uid="uid://c8vqy3m4n2pxr" path="res://scenes/collectibles/coin.tscn" id="7_coin"]
+[ext_resource type="PackedScene" uid="uid://bq8xy4n3m1pxs" path="res://scenes/collectibles/crown_crystal.tscn" id="8_crystal"]
+[ext_resource type="PackedScene" uid="uid://c4vry2k8p3nxm" path="res://scenes/collectibles/treasure_chest.tscn" id="9_chest"]
+[ext_resource type="PackedScene" uid="uid://dh3vy8n2m5pxt" path="res://scenes/collectibles/heart_pickup.tscn" id="10_heart"]
+[ext_resource type="PackedScene" uid="uid://bx7vy9n4p2sxr" path="res://scenes/powerups/powerup.tscn" id="11_powerup"]
+[ext_resource type="PackedScene" uid="uid://dk9vh3wm2k8lq4" path="res://scenes/hazards/spike.tscn" id="12_spike"]
+
+[sub_resource type="Environment" id="Environment_showcase"]
+background_mode = 1
+background_color = Color(0.5, 0.7, 1, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.9, 0.95, 1, 1)
+ambient_light_energy = 0.9
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.4
+glow_strength = 1.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(50, 1, 50)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_platform"]
+size = Vector3(4.5, 1, 4.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_platform_large"]
+size = Vector3(8, 1, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_platform_small"]
+size = Vector3(3, 1, 3)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_goal"]
+radius = 2.0
+
+[node name="Level_Phase3_Showcase" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_showcase")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 10, 0)
+light_color = Color(1, 0.98, 0.9, 1)
+light_energy = 1.2
+shadow_enabled = true
+shadow_bias = 0.05
+shadow_opacity = 0.7
+
+[node name="Player" parent="." groups=["player"] instance=ExtResource("1_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="CameraController" type="Node3D" parent="." groups=["camera"]]
+script = ExtResource("2_camera")
+enable_debug = false
+debug_console_output = false
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraController"]
+spring_length = 9.434
+margin = 0.3
+
+[node name="Camera3D" type="Camera3D" parent="CameraController/SpringArm3D"]
+current = true
+fov = 60.0
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="GameHUD" parent="UI" instance=ExtResource("5_hud")]
+
+[node name="PauseMenu" parent="UI" instance=ExtResource("6_pause")]
+visible = false
+
+[node name="Ground" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="GroundTiles" type="Node3D" parent="Ground"]
+
+[node name="Tile_Center" parent="Ground/GroundTiles" instance=ExtResource("4_platform_dirt")]
+transform = Transform3D(10, 0, 0, 0, 0.5, 0, 0, 0, 10, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_ground")
+
+[node name="Collectibles" type="Node3D" parent="."]
+
+[node name="CoinSection" type="Node3D" parent="Collectibles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, -10)
+
+[node name="Label" type="Label3D" parent="Collectibles/CoinSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+text = "COINS AREA
+Regular (1) | Big (5) | Hidden (10)"
+font_size = 32
+outline_size = 8
+
+[node name="Platform_Coins" type="StaticBody3D" parent="Collectibles/CoinSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Model" parent="Collectibles/CoinSection/Platform_Coins" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(3.5, 0, 0, 0, 0.5, 0, 0, 0, 3.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/CoinSection/Platform_Coins"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform_large")
+
+[node name="Coin_Regular1" parent="Collectibles/CoinSection" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2.5, 0)
+
+[node name="Coin_Regular2" parent="Collectibles/CoinSection" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2.5, 0)
+
+[node name="Coin_Regular3" parent="Collectibles/CoinSection" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+
+[node name="Coin_Big1" parent="Collectibles/CoinSection" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2.5, 0)
+coin_type = 1
+
+[node name="Coin_Hidden1" parent="Collectibles/CoinSection" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 2.5, 0)
+coin_type = 2
+
+[node name="CrystalSection" type="Node3D" parent="Collectibles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, -10)
+
+[node name="Label" type="Label3D" parent="Collectibles/CrystalSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+text = "CROWN CRYSTALS
+Main Objective (3 per level)"
+font_size = 32
+outline_size = 8
+
+[node name="Platform_Crystal1" type="StaticBody3D" parent="Collectibles/CrystalSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 0)
+
+[node name="Model" parent="Collectibles/CrystalSection/Platform_Crystal1" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/CrystalSection/Platform_Crystal1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform_small")
+
+[node name="Platform_Crystal2" type="StaticBody3D" parent="Collectibles/CrystalSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="Model" parent="Collectibles/CrystalSection/Platform_Crystal2" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/CrystalSection/Platform_Crystal2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform_small")
+
+[node name="Platform_Crystal3" type="StaticBody3D" parent="Collectibles/CrystalSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 3, 0)
+
+[node name="Model" parent="Collectibles/CrystalSection/Platform_Crystal3" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/CrystalSection/Platform_Crystal3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform_small")
+
+[node name="Crystal1" parent="Collectibles/CrystalSection" instance=ExtResource("8_crystal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 3, 0)
+crystal_id = 0
+
+[node name="Crystal2" parent="Collectibles/CrystalSection" instance=ExtResource("8_crystal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+crystal_id = 1
+
+[node name="Crystal3" parent="Collectibles/CrystalSection" instance=ExtResource("8_crystal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 5, 0)
+crystal_id = 2
+
+[node name="ChestSection" type="Node3D" parent="Collectibles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, 10)
+
+[node name="Label" type="Label3D" parent="Collectibles/ChestSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+text = "TREASURE CHESTS
+Press E to Open"
+font_size = 32
+outline_size = 8
+
+[node name="Platform_Chest" type="StaticBody3D" parent="Collectibles/ChestSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Model" parent="Collectibles/ChestSection/Platform_Chest" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(3, 0, 0, 0, 0.5, 0, 0, 0, 3, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/ChestSection/Platform_Chest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform_large")
+
+[node name="Chest1" parent="Collectibles/ChestSection" instance=ExtResource("9_chest")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 0)
+chest_id = "showcase_chest_1"
+coin_value = 10
+
+[node name="Chest2" parent="Collectibles/ChestSection" instance=ExtResource("9_chest")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, 0)
+chest_id = "showcase_chest_2"
+coin_value = 15
+
+[node name="HeartSection" type="Node3D" parent="Collectibles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 10)
+
+[node name="Label" type="Label3D" parent="Collectibles/HeartSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+text = "HEART PICKUPS
+Touch spike to lose HP, then collect heart!"
+font_size = 32
+outline_size = 8
+
+[node name="Platform_Heart" type="StaticBody3D" parent="Collectibles/HeartSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Model" parent="Collectibles/HeartSection/Platform_Heart" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(2.5, 0, 0, 0, 0.5, 0, 0, 0, 2.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/HeartSection/Platform_Heart"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform")
+
+[node name="Heart1" parent="Collectibles/HeartSection" instance=ExtResource("10_heart")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+
+[node name="TestSpike" parent="Collectibles/HeartSection" instance=ExtResource("12_spike")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 0)
+
+[node name="PowerUpSection" type="Node3D" parent="Collectibles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
+
+[node name="Label" type="Label3D" parent="Collectibles/PowerUpSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+text = "POWER-UPS
+Speed | Invincibility | Magnet | 2x Coins"
+font_size = 32
+outline_size = 8
+
+[node name="Platform_PowerUps" type="StaticBody3D" parent="Collectibles/PowerUpSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Model" parent="Collectibles/PowerUpSection/Platform_PowerUps" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(5, 0, 0, 0, 0.5, 0, 0, 0, 3, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/PowerUpSection/Platform_PowerUps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform_large")
+
+[node name="Platform_Speed" type="StaticBody3D" parent="Collectibles/PowerUpSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2, 0)
+
+[node name="Model" parent="Collectibles/PowerUpSection/Platform_Speed" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/PowerUpSection/Platform_Speed"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform_small")
+
+[node name="Platform_Invincibility" type="StaticBody3D" parent="Collectibles/PowerUpSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 0)
+
+[node name="Model" parent="Collectibles/PowerUpSection/Platform_Invincibility" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/PowerUpSection/Platform_Invincibility"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform_small")
+
+[node name="Platform_Magnet" type="StaticBody3D" parent="Collectibles/PowerUpSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, 0)
+
+[node name="Model" parent="Collectibles/PowerUpSection/Platform_Magnet" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/PowerUpSection/Platform_Magnet"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform_small")
+
+[node name="Platform_DoubleCoin" type="StaticBody3D" parent="Collectibles/PowerUpSection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2, 0)
+
+[node name="Model" parent="Collectibles/PowerUpSection/Platform_DoubleCoin" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/PowerUpSection/Platform_DoubleCoin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_platform_small")
+
+[node name="PowerUp_Speed" parent="Collectibles/PowerUpSection" instance=ExtResource("11_powerup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 3.5, 0)
+powerup_type = 0
+
+[node name="PowerUp_Invincibility" parent="Collectibles/PowerUpSection" instance=ExtResource("11_powerup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.5, 0)
+powerup_type = 1
+
+[node name="PowerUp_Magnet" parent="Collectibles/PowerUpSection" instance=ExtResource("11_powerup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.5, 0)
+powerup_type = 2
+
+[node name="PowerUp_DoubleCoin" parent="Collectibles/PowerUpSection" instance=ExtResource("11_powerup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 3.5, 0)
+powerup_type = 3
+
+[node name="CoinTrail" type="Node3D" parent="Collectibles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
+
+[node name="Label" type="Label3D" parent="Collectibles/CoinTrail"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+text = "COIN COLLECTION PATH
+Follow the trail!"
+font_size = 32
+outline_size = 8
+
+[node name="Platform_Trail1" type="StaticBody3D" parent="Collectibles/CoinTrail"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1, 0)
+
+[node name="Model" parent="Collectibles/CoinTrail/Platform_Trail1" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/CoinTrail/Platform_Trail1"]
+shape = SubResource("BoxShape3D_platform_small")
+
+[node name="Platform_Trail2" type="StaticBody3D" parent="Collectibles/CoinTrail"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2, 0)
+
+[node name="Model" parent="Collectibles/CoinTrail/Platform_Trail2" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/CoinTrail/Platform_Trail2"]
+shape = SubResource("BoxShape3D_platform_small")
+
+[node name="Platform_Trail3" type="StaticBody3D" parent="Collectibles/CoinTrail"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+
+[node name="Model" parent="Collectibles/CoinTrail/Platform_Trail3" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/CoinTrail/Platform_Trail3"]
+shape = SubResource("BoxShape3D_platform_small")
+
+[node name="Platform_Trail4" type="StaticBody3D" parent="Collectibles/CoinTrail"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 4, 0)
+
+[node name="Model" parent="Collectibles/CoinTrail/Platform_Trail4" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/CoinTrail/Platform_Trail4"]
+shape = SubResource("BoxShape3D_platform_small")
+
+[node name="Platform_Trail5" type="StaticBody3D" parent="Collectibles/CoinTrail"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 5, 0)
+
+[node name="Model" parent="Collectibles/CoinTrail/Platform_Trail5" instance=ExtResource("3_platform_grass")]
+transform = Transform3D(1.5, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0, 0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Collectibles/CoinTrail/Platform_Trail5"]
+shape = SubResource("BoxShape3D_platform_small")
+
+[node name="Coin_Trail1" parent="Collectibles/CoinTrail" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2.5, 0)
+
+[node name="Coin_Trail2" parent="Collectibles/CoinTrail" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2.7, 0)
+
+[node name="Coin_Trail3" parent="Collectibles/CoinTrail" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3.5, 0)
+
+[node name="Coin_Trail4" parent="Collectibles/CoinTrail" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.7, 0)
+
+[node name="Coin_Trail5" parent="Collectibles/CoinTrail" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
+
+[node name="Coin_Trail6" parent="Collectibles/CoinTrail" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 4.7, 0)
+
+[node name="Coin_Trail7" parent="Collectibles/CoinTrail" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 5.5, 0)
+
+[node name="Coin_Trail8" parent="Collectibles/CoinTrail" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 5.7, 0)
+
+[node name="Coin_Trail9" parent="Collectibles/CoinTrail" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 6.5, 0)
+
+[node name="Coin_Trail10" parent="Collectibles/CoinTrail" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 7, 0)
+coin_type = 1
+
+[node name="AdditionalCoins" type="Node3D" parent="Collectibles"]
+
+[node name="Coin_Extra1" parent="Collectibles/AdditionalCoins" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.5, -5)
+
+[node name="Coin_Extra2" parent="Collectibles/AdditionalCoins" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.5, -5)
+
+[node name="Coin_Extra3" parent="Collectibles/AdditionalCoins" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.5, 5)
+
+[node name="Coin_Extra4" parent="Collectibles/AdditionalCoins" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.5, 5)
+
+[node name="Coin_Extra5" parent="Collectibles/AdditionalCoins" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="Coin_Extra6" parent="Collectibles/AdditionalCoins" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.5, 2)
+
+[node name="Coin_Extra7" parent="Collectibles/AdditionalCoins" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1.5, 2)
+
+[node name="Coin_Extra8" parent="Collectibles/AdditionalCoins" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.5, -2)
+
+[node name="Coin_Extra9" parent="Collectibles/AdditionalCoins" instance=ExtResource("7_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1.5, -2)

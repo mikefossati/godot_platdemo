@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3 uid="uid://bq8xy4n3m1pxs"]
+
+[ext_resource type="Script" path="res://scripts/collectibles/crown_crystal.gd" id="1_crystal"]
+[ext_resource type="PackedScene" uid="uid://dykhlfhqwufx5" path="res://assets/models/quaternius_platformer/Powerups and Pickups/Gem_Pink.gltf" id="2_gem_model"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pillar"]
+top_radius = 0.1
+bottom_radius = 0.2
+height = 8.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_crystal"]
+radius = 0.8
+
+[node name="CrownCrystal" type="Area3D"]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_crystal")
+
+[node name="GemModel" parent="." instance=ExtResource("2_gem_model")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0.5, 0)
+
+[node name="LightPillar" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, 0)
+mesh = SubResource("CylinderMesh_pillar")
+skeleton = NodePath("../..")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+light_color = Color(1, 0.4, 0.8, 1)
+light_energy = 2.0
+omni_range = 5.0
+
+[node name="GlowParticles" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+amount = 16
+lifetime = 2.0
+randomness = 0.5
+visibility_aabb = AABB(-2, -2, -2, 4, 4, 4)
+
+[node name="BurstParticles" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+emitting = false
+amount = 32
+lifetime = 1.0
+one_shot = true
+explosiveness = 0.9
+randomness = 0.8
+visibility_aabb = AABB(-3, -3, -3, 6, 6, 6)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_crystal")

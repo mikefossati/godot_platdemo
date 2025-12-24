@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://bx7vy9n4p2sxr"]
+
+[ext_resource type="Script" path="res://scripts/powerups/powerup_base.gd" id="1_powerup"]
+[ext_resource type="PackedScene" uid="uid://cqb4tufx3xpco" path="res://assets/models/quaternius_platformer/Powerups and Pickups/Star.gltf" id="2_star_model"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_powerup"]
+radius = 0.7
+
+[node name="PowerUp" type="Area3D"]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_powerup")
+
+[node name="PowerUpModel" parent="." instance=ExtResource("2_star_model")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_powerup")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+light_energy = 2.0
+omni_range = 4.0
+
+[node name="GlowParticles" type="GPUParticles3D" parent="."]
+amount = 12
+lifetime = 1.5
+visibility_aabb = AABB(-2, -2, -2, 4, 4, 4)
+
+[node name="CollectParticles" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 20
+lifetime = 1.0
+one_shot = true
+explosiveness = 0.9
+visibility_aabb = AABB(-3, -3, -3, 6, 6, 6)
